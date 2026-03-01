@@ -1,0 +1,3111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>FitFuel AI | Pro Nutri-Chef</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #00ff88;
+            --accent-dark: #00cc6a;
+            --accent-light: #66ffb3;
+            --bg: #0a0a0c;
+            --bg-card: #111114;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-dim: #a0a0a0;
+            --text-bright: #f0f0f0;
+            --danger: #ff4757;
+            --warning: #ffa502;
+            --info: #2ed573;
+            --purple: #7158e2;
+            --blue: #3498db;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 20%, rgba(113, 88, 226, 0.05) 0%, transparent 20%);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: min(800px, 95vw);
+            background: var(--bg-card);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: clamp(20px, 5vw, 30px);
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        #app-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            border-radius: 30px 30px 0 0;
+        }
+
+        .hidden { display: none !important; }
+
+        h1, h2, h3 { 
+            font-weight: 800; 
+            letter-spacing: -0.5px; 
+            margin-bottom: 10px; 
+            line-height: 1.2;
+        }
+        
+        h1 { 
+            font-size: clamp(2rem, 8vw, 3rem); 
+            margin-top: 0; 
+        }
+        h2 { 
+            font-size: clamp(1.5rem, 6vw, 2rem); 
+        }
+        h3 { 
+            font-size: clamp(1.2rem, 5vw, 1.5rem); 
+            color: var(--text-bright); 
+        }
+        
+        p { 
+            color: var(--text-dim); 
+            line-height: 1.6; 
+            margin-bottom: 20px;
+            font-size: clamp(0.95rem, 3vw, 1.05rem);
+        }
+
+        .tagline {
+            color: var(--accent-light);
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        }
+
+        .grid-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .grid-options-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: clamp(12px, 3vw, 18px);
+            border-radius: clamp(12px, 3vw, 16px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:hover {
+            background: var(--accent);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        button:disabled:hover {
+            background: rgba(255,255,255,0.03);
+            color: white;
+            box-shadow: none;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000; 
+            width: 100%; 
+            margin-top: 10px; 
+            font-weight: 700;
+            font-size: clamp(1rem, 3.5vw, 1.1rem);
+            padding: clamp(15px, 4vw, 20px);
+            border: none;
+        }
+
+        .btn-secondary {
+            background: rgba(113, 88, 226, 0.1);
+            border: 1px solid rgba(113, 88, 226, 0.3);
+            color: var(--purple);
+        }
+
+        .btn-secondary:hover {
+            background: var(--purple);
+            color: white;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: clamp(12px, 3vw, 16px);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: clamp(10px, 3vw, 12px);
+            color: white;
+            margin-bottom: 15px;
+            outline: none;
+            box-sizing: border-box;
+            font-size: clamp(0.95rem, 3vw, 1rem);
+            transition: border 0.2s;
+            min-height: 44px;
+        }
+
+        input:focus, textarea:focus, select:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .nutrition-badge {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent);
+            padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px);
+            border-radius: 100px;
+            font-size: clamp(12px, 3vw, 14px);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 2, 0.15);
+            color: var(--warning);
+        }
+
+        .badge-info {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--blue);
+        }
+
+        .badge-purple {
+            background: rgba(113, 88, 226, 0.15);
+            color: var(--purple);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-top: 25px;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .video-container iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 20px;
+        }
+
+        #recipe-content { 
+            text-align: left; 
+            background: rgba(255,255,255,0.02); 
+            padding: clamp(15px, 4vw, 25px); 
+            border-radius: 15px; 
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .mode-toggle { 
+            display: flex; 
+            gap: 10px; 
+            background: rgba(0,0,0,0.3); 
+            padding: 6px; 
+            border-radius: 15px; 
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .mode-toggle button { 
+            flex: 1; 
+            padding: clamp(10px, 3vw, 12px); 
+            border: none; 
+            font-size: clamp(13px, 3vw, 15px); 
+            border-radius: 10px; 
+            min-height: 44px;
+        }
+        
+        .active-mode { 
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important; 
+            color: #000 !important; 
+            font-weight: 700;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: clamp(15px, 4vw, 25px);
+            margin-bottom: 25px;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .feature-card:active {
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .feature-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title i {
+            color: var(--accent);
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: clamp(12px, 3vw, 15px);
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .cost-breakdown {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 12px;
+            padding: clamp(15px, 4vw, 20px);
+            margin: 20px 0;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cost-item span:first-child {
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .cost-total {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: clamp(1.1rem, 4vw, 1.3rem);
+            border-bottom: none;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .swap-suggestion {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .swap-suggestion i {
+            color: var(--warning);
+            margin-right: 8px;
+        }
+
+        .cheat-hack {
+            background: rgba(113, 88, 226, 0.1);
+            border: 1px solid rgba(113, 88, 226, 0.3);
+            border-radius: 12px;
+            padding: clamp(15px, 4vw, 20px);
+            margin: 20px 0;
+        }
+
+        .cheat-hack h4 {
+            color: var(--purple);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: clamp(1.1rem, 4vw, 1.3rem);
+        }
+
+        .cheat-hack h4 i {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .cheat-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            gap: 15px;
+            flex-direction: row;
+        }
+
+        @media (max-width: 640px) {
+            .cheat-comparison {
+                flex-direction: column;
+            }
+        }
+
+        .cheat-original, .cheat-healthy {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            word-break: break-word;
+        }
+
+        .cheat-original {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .cheat-healthy {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .cheat-original h5, .cheat-healthy h5 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(1rem, 3.5vw, 1.1rem);
+        }
+
+        .cheat-original h5 {
+            color: var(--danger);
+        }
+
+        .cheat-healthy h5 {
+            color: var(--accent);
+        }
+
+        /* Enhanced Loader Styles */
+        .modern-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(30px, 8vw, 60px) clamp(15px, 4vw, 20px);
+            background: rgba(0, 255, 136, 0.02);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-loader::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, transparent 70%);
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .pulse-ring {
+            width: min(120px, 30vw);
+            height: min(120px, 30vw);
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .pulse-ring-inner {
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .pulse-ring-inner::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--purple);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        .pulse-ring-inner::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 4px solid transparent;
+            border-top: 4px solid var(--accent-light);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(30px, 8vw, 40px);
+            color: var(--accent);
+            z-index: 2;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .progress-container {
+            width: min(300px, 80vw);
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+            width: 0%;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .percentage-text {
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            font-weight: 800;
+            color: var(--accent);
+            margin: 10px 0;
+            text-shadow: 0 0 20px rgba(0,255,136,0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(0,255,136,0.5); }
+            50% { text-shadow: 0 0 40px rgba(0,255,136,0.8); }
+        }
+
+        .loader-dots {
+            display: flex;
+            gap: clamp(8px, 3vw, 12px);
+            margin-top: 20px;
+        }
+
+        .loader-dot {
+            width: clamp(10px, 3vw, 12px);
+            height: clamp(10px, 3vw, 12px);
+            border-radius: 50%;
+            background: var(--accent);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+        .loader-dot:nth-child(3) { animation-delay: 0s; }
+
+        .loader-tip {
+            margin-top: 30px;
+            padding: 15px 25px;
+            background: rgba(0,255,136,0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(0,255,136,0.2);
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            max-width: 400px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .loader-tip i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0);
+                opacity: 0.5;
+            } 
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            right: max(20px, env(safe-area-inset-right));
+            z-index: 100;
+        }
+
+        .fab {
+            width: min(60px, 15vw);
+            height: min(60px, 15vw);
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(360deg);
+            box-shadow: 0 12px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        .header-controls {
+            position: absolute;
+            top: max(15px, env(safe-area-inset-top));
+            right: max(15px, env(safe-area-inset-right));
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: flex-end;
+                margin-bottom: 20px;
+            }
+        }
+
+        .lang-selector {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(113,88,226,0.1));
+            border: 1px solid rgba(0,255,136,0.3);
+            color: white;
+            padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 15px);
+            border-radius: 12px;
+            font-size: clamp(12px, 3vw, 14px);
+            cursor: pointer;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            font-weight: 600;
+            min-height: 40px;
+        }
+
+        .lang-selector:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0,255,136,0.2);
+        }
+
+        .lang-selector option {
+            background: var(--bg-card);
+            color: white;
+        }
+
+        .about-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .about-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: clamp(20px, 5vw, 40px);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            width: 100%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .step-number {
+            background: var(--accent);
+            color: #000;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .price-accuracy {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .price-accuracy i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            word-break: break-word;
+            flex-wrap: wrap;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: var(--blue);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--accent);
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            color: var(--warning);
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            font-size: clamp(0.85rem, 3vw, 0.9rem);
+        }
+
+        .meta-item i {
+            color: var(--accent);
+        }
+
+        .ingredient-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .ingredient-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ingredient-list li:last-child {
+            border-bottom: none;
+        }
+
+        .ingredient-quantity {
+            color: var(--accent);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .instruction-list {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+        }
+
+        .instruction-list li {
+            counter-increment: step;
+            padding: 15px 0 15px 45px;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            word-break: break-word;
+        }
+
+        .instruction-list li:last-child {
+            border-bottom: none;
+        }
+
+        .instruction-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 15px;
+            background: var(--accent);
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: clamp(30px, 8vw, 40px);
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .error-container i {
+            font-size: clamp(2.5rem, 8vw, 3rem);
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+
+        .retry-button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            min-height: 44px;
+        }
+
+        .retry-button:hover {
+            background: #ff2e43;
+        }
+
+        /* PDF-friendly styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .no-print, .floating-action, .header-controls {
+                display: none !important;
+            }
+            
+            #printable-area {
+                background: white;
+                color: black;
+                padding: 20px;
+            }
+            
+            .badge {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border: 1px solid #ddd;
+            }
+            
+            .ingredient-list li {
+                color: black;
+            }
+        }
+
+        /* Loading tips carousel */
+        .tip-carousel {
+            margin-top: 20px;
+            min-height: 60px;
+            width: 100%;
+        }
+
+        .tip-item {
+            display: none;
+            padding: 10px 20px;
+            background: rgba(0,255,136,0.1);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent);
+            word-break: break-word;
+        }
+
+        .tip-item.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* YouTube video placeholder */
+        .video-placeholder {
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px dashed var(--accent);
+            margin: 20px 0;
+        }
+
+        .video-placeholder i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .video-error {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Safe area for notched phones */
+        @supports (padding: max(0px)) {
+            #app-container {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+            }
+            
+            .floating-action {
+                bottom: max(20px, env(safe-area-inset-bottom));
+                right: max(20px, env(safe-area-inset-right));
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            button, .feature-card, .fab {
+                -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
+            }
+            
+            button:hover, .feature-card:hover, .fab:hover {
+                transform: none;
+            }
+            
+            button:active, .feature-card:active, .fab:active {
+                opacity: 0.8;
+            }
+        }
+
+        /* Landscape mode on phones */
+        @media (max-width: 896px) and (orientation: landscape) {
+            #app-container {
+                max-width: 90vw;
+                padding: 20px;
+            }
+            
+            .grid-options-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .macro-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- Header Controls -->
+    <div class="header-controls">
+        <select class="lang-selector" id="langSelector" onchange="changeLanguage(this.value)">
+            <option value="en">🇺🇸 English</option>
+            <option value="hi">🇮🇳 हिंदी</option>
+            <option value="ta">🇮🇳 தமிழ்</option>
+        </select>
+        <button onclick="showAbout()" style="background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; padding: 5px; min-width: 44px; min-height: 44px;" title="About">
+            <i class="fas fa-question-circle"></i>
+        </button>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="screen-home">
+        <h1>FitFuel<span style="color:var(--accent)"> Pro</span></h1>
+        <p class="tagline" id="tagline">AI-Powered Nutrition & Smart Meal Planning</p>
+        
+        <div class="grid-options-3">
+            <div class="feature-card" onclick="showScreen('screen-cheat')">
+                <div class="feature-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3 id="cheat-title">Cheat Meal Converter</h3>
+                <p id="cheat-desc">Transform cravings into healthy, protein-packed versions with smart substitutions.</p>
+                <div style="color: var(--accent); font-weight: 600; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i> <span id="try-now">Try it now</span>
+                </div>
+            </div>
+            
+            <div class="feature-card" onclick="showScreen('screen-specific')">
+                <div class="feature-icon">
+                    <i class="fas fa-utensil-spoon"></i>
+                </div>
+                <h3 id="specific-title">Specific Recipe</h3>
+                <p id="specific-desc">Get detailed recipe for any dish you want - ingredients, instructions & nutrition facts.</p>
+                <div style="color: var(--accent); font-weight: 600; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i> <span id="get-recipe">Get Recipe</span>
+                </div>
+            </div>
+            
+            <div class="feature-card" onclick="showScreen('screen-ai-meal')">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 id="ai-meal-title">AI Meal Plan</h3>
+                <p id="ai-meal-desc">Personalized meal planning based on goals, preferences, and dietary needs.</p>
+                <div style="color: var(--accent); font-weight: 600; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i> <span id="plan-meal">Plan Meal</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mode-toggle">
+            <button id="btn-mode-standard" class="active-mode" onclick="setMode('standard')">
+                <i class="fas fa-utensils"></i> <span id="standard-btn">Standard</span>
+            </button>
+            <button id="btn-mode-pantry" onclick="setMode('pantry')">
+                <i class="fas fa-egg"></i> <span id="pantry-btn">Smart Pantry</span>
+            </button>
+        </div>
+
+        <div id="standard-desc">
+            <h3><i class="fas fa-utensils"></i> <span id="standard-title">Standard Mode</span></h3>
+            <p id="standard-desc-text">Full meal planning by region, goals, and targets with cost analysis.</p>
+            <button class="btn-primary" onclick="showScreen('screen-region')">
+                <i class="fas fa-rocket"></i> <span id="start-standard">Start Standard Plan</span>
+            </button>
+        </div>
+
+        <div id="pantry-desc" class="hidden">
+            <h3><i class="fas fa-egg"></i> <span id="pantry-title">Pantry Mode</span></h3>
+            <p id="pantry-desc-text">Tell us what you have; we'll tell you what to make with cost-per-meal breakdown.</p>
+            <input type="text" id="pantryInput" placeholder="e.g. 2 eggs, 1 onion, chicken breast, rice, spices">
+            <button class="btn-primary" onclick="startPantry()">
+                <i class="fas fa-magic"></i> <span id="build-ingredients">Build from Ingredients</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="about-modal hidden">
+        <div class="about-content">
+            <button class="close-modal" onclick="hideAbout()">&times;</button>
+            <h2 style="color: var(--accent); margin-top: 0;">About FitFuel Pro</h2>
+            <p id="about-intro">FitFuel Pro is an AI-powered nutrition assistant that helps you create healthy, personalized meal plans based on your goals, preferences, and available ingredients.</p>
+            
+            <h3>How It Works:</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div>
+                    <h4>Choose Your Mode</h4>
+                    <p><strong>Standard Mode:</strong> Select cuisine type, meal type, fitness goal, and macro targets for a fully customized meal plan.</p>
+                    <p><strong>Smart Pantry Mode:</strong> Input ingredients you have available, and AI will create recipes using what you already own.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div>
+                    <h4>Set Your Preferences</h4>
+                    <p>Select your fitness goal (Fat Loss, Muscle Building, Maintenance, or Endurance) and set macro targets (calories, protein, carbs, fiber). Leave blank for AI optimization.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div>
+                    <h4>Get AI-Generated Recipes</h4>
+                    <p>Our AI chef creates personalized recipes with:</p>
+                    <ul>
+                        <li>Complete ingredient lists</li>
+                        <li>Step-by-step instructions</li>
+                        <li>Nutritional information</li>
+                        <li>Cost breakdown per serving</li>
+                        <li>Budget swap suggestions</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div>
+                    <h4>Special Features</h4>
+                    <p><strong>Cheat Meal Converter:</strong> Transform your cravings into healthy versions with smart ingredient substitutions.</p>
+                    <p><strong>Specific Recipe Generator:</strong> Get detailed recipes for any dish you want.</p>
+                    <p><strong>Cost Analysis:</strong> See ingredient costs and get budget-friendly swap suggestions.</p>
+                    <p><strong>Cooking Videos:</strong> Watch recipe tutorials directly in the app.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div>
+                    <h4>Export & Save</h4>
+                    <p>Copy recipes to clipboard or download as PDF for offline use. Recipes include all nutritional information and cooking instructions.</p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <strong>Note:</strong> This app uses AI to generate recipes. Always consult with a healthcare professional for personalized dietary advice.
+            </p>
+        </div>
+    </div>
+
+    <!-- Specific Recipe Generator Screen -->
+    <div id="screen-specific" class="hidden">
+        <h2><i class="fas fa-utensil-spoon"></i> <span id="specific-screen-title">Specific Recipe Generator</span></h2>
+        <p id="specific-screen-desc">Enter the name of any dish you want to make, and we'll give you a complete recipe with nutrition facts!</p>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <span id="specific-info">Examples: "Chicken Biryani", "Vegetable Lasagna", "Butter Chicken", "Chocolate Cake", "Paneer Tikka"</span>
+        </div>
+        
+        <input type="text" id="specificInput" placeholder="Enter dish name (e.g. 'Biryani', 'Pizza', 'Chocolate Brownies')">
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-chart-line"></i> <span id="include-nutrition">Include Nutrition Facts</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="nutritionToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-rupee-sign"></i> <span id="include-cost">Include Cost Analysis</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="costToggleSpecific" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button class="btn-primary" onclick="generateSpecificRecipe()" id="generateSpecificBtn">
+            <i class="fas fa-utensils"></i> <span id="generate-recipe">Generate Complete Recipe</span>
+        </button>
+        
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> <span id="back-home">Back to Home</span>
+        </button>
+    </div>
+
+    <!-- Cheat Meal Converter Screen -->
+    <div id="screen-cheat" class="hidden">
+        <h2><i class="fas fa-exchange-alt"></i> <span id="cheat-screen-title">Cheat Meal Converter</span></h2>
+        <p id="cheat-screen-desc">Craving something indulgent? We'll transform it into a healthier, protein-packed version!</p>
+        
+        <input type="text" id="cheatInput" placeholder="Describe your craving (e.g. 'Butter chicken pizza', 'Chocolate brownie', 'Biryani')">
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-bullseye"></i> <span id="include-macros">Include Macros Target</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="cheatMacroToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div id="cheatMacroSettings" class="hidden">
+            <div class="macro-grid">
+                <input type="text" id="cheatProtein" placeholder="Protein target (g)">
+                <input type="text" id="cheatCalories" placeholder="Max Calories">
+                <input type="text" id="cheatCarbs" placeholder="Max Carbs (g)">
+                <input type="text" id="cheatBudget" placeholder="Budget (₹/$)">
+            </div>
+        </div>
+        
+        <button class="btn-primary" onclick="generateCheatMeal()" id="generateCheatBtn">
+            <i class="fas fa-wand-magic-sparkles"></i> <span id="convert-button">Convert to Healthy Version</span>
+        </button>
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> <span id="back-home2">Back to Home</span>
+        </button>
+    </div>
+
+    <!-- AI Meal Plan Screen -->
+    <div id="screen-ai-meal" class="hidden">
+        <h2><i class="fas fa-robot"></i> <span id="ai-meal-screen-title">AI Meal Plan</span></h2>
+        <p id="ai-meal-screen-desc">Get personalized meal plans based on your dietary preferences and goals.</p>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-lightbulb"></i>
+            <span id="ai-meal-info">Select your preferences below to generate a complete meal plan</span>
+        </div>
+        
+        <select id="dietPreference">
+            <option value="">Select Diet Preference</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Non-Vegetarian">Non-Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Keto">Keto</option>
+            <option value="Gluten-Free">Gluten-Free</option>
+        </select>
+        
+        <select id="mealPlanType">
+            <option value="">Select Meal Plan Type</option>
+            <option value="Weight Loss">Weight Loss</option>
+            <option value="Muscle Gain">Muscle Gain</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Athletic Performance">Athletic Performance</option>
+            <option value="General Health">General Health</option>
+        </select>
+        
+        <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3">
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-rupee-sign"></i> <span id="include-shopping">Include Shopping List</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="shoppingToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button class="btn-primary" onclick="generateMealPlan()" id="generateMealPlanBtn">
+            <i class="fas fa-calendar-alt"></i> <span id="generate-plan-btn">Generate Meal Plan</span>
+        </button>
+        
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+            <i class="fas fa-arrow-left"></i> <span id="back-home3">Back to Home</span>
+        </button>
+    </div>
+
+    <!-- Region Selection -->
+    <div id="screen-region" class="hidden">
+        <h2><i class="fas fa-globe-asia"></i> <span id="choose-cuisine">Choose Cuisine</span></h2>
+        <div class="grid-options">
+            <button onclick="save('region', 'North Indian', 'screen-meal')"><i class="fas fa-utensils"></i> North Indian 🍛</button>
+            <button onclick="save('region', 'South Indian', 'screen-meal')"><i class="fas fa-leaf"></i> South Indian 🥥</button>
+            <button onclick="save('region', 'Global/Western', 'screen-meal')"><i class="fas fa-hamburger"></i> Global/Western 🍔</button>
+            <button onclick="save('region', 'Mediterranean', 'screen-meal')"><i class="fas fa-seedling"></i> Mediterranean 🥗</button>
+        </div>
+    </div>
+
+    <!-- Meal Type -->
+    <div id="screen-meal" class="hidden">
+        <h2><i class="fas fa-concierge-bell"></i> <span id="meal-type">Meal Type</span></h2>
+        <div class="grid-options">
+            <button onclick="save('meal', 'Breakfast', 'screen-goal')"><i class="fas fa-sun"></i> <span id="breakfast">Breakfast</span></button>
+            <button onclick="save('meal', 'Lunch', 'screen-goal')"><i class="fas fa-sun"></i> <span id="lunch">Lunch</span></button>
+            <button onclick="save('meal', 'Dinner', 'screen-goal')"><i class="fas fa-moon"></i> <span id="dinner">Dinner</span></button>
+            <button onclick="save('meal', 'Snack', 'screen-goal')"><i class="fas fa-apple-alt"></i> <span id="snack">Snack</span></button>
+        </div>
+    </div>
+
+    <!-- Goal Selection -->
+    <div id="screen-goal" class="hidden">
+        <h2><i class="fas fa-bullseye"></i> <span id="fitness-goal">Fitness Goal</span></h2>
+        <div class="grid-options">
+            <button onclick="save('goal', 'Fat Loss', 'screen-pro-limits')"><i class="fas fa-fire"></i> 🔥 <span id="fat-loss">Fat Loss</span></button>
+            <button onclick="save('goal', 'Muscle Building', 'screen-pro-limits')"><i class="fas fa-dumbbell"></i> 💪 <span id="muscle-gain">Muscle Gain</span></button>
+            <button onclick="save('goal', 'Maintenance', 'screen-pro-limits')"><i class="fas fa-balance-scale"></i> ⚖️ <span id="maintenance">Maintenance</span></button>
+            <button onclick="save('goal', 'Endurance', 'screen-pro-limits')"><i class="fas fa-running"></i> 🏃 <span id="endurance">Endurance</span></button>
+        </div>
+    </div>
+
+    <!-- Macro Targets -->
+    <div id="screen-pro-limits" class="hidden">
+        <h2><i class="fas fa-chart-line"></i> <span id="macro-targets">Macro Targets</span></h2>
+        <p id="macro-desc">Enter your targets - AI will strictly follow these numbers!</p>
+        
+        <input type="text" id="proCal" placeholder="Max Calories (e.g. 600)">
+        <div class="macro-grid">
+            <input type="text" id="proProtein" placeholder="Protein (g) - e.g. 80">
+            <input type="text" id="proCarbs" placeholder="Carbs (g) - e.g. 50">
+            <input type="text" id="proFiber" placeholder="Fiber (g) - e.g. 15">
+            <input type="text" id="proBudget" placeholder="Budget (₹/$) - e.g. 200">
+        </div>
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-shopping-cart"></i> <span id="show-cost">Show Cost Breakdown</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="costToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button class="btn-primary" onclick="finalizePro()">
+            <i class="fas fa-brain"></i> <span id="generate-plan">Generate Pro Plan</span>
+        </button>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="screen-result" class="hidden">
+        <div id="loader" class="loader hidden">
+            <div class="modern-loader">
+                <div class="pulse-ring">
+                    <div class="pulse-ring-inner"></div>
+                    <div class="loader-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                </div>
+                <div class="percentage-text" id="loader-percentage">0%</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="loader-progress" style="width: 0%"></div>
+                </div>
+                <h3 id="loader-title" style="margin-top: 20px; color: var(--accent);">AI Chef is Crafting Your Recipe</h3>
+                <p id="loader-message" style="color: var(--text-dim); max-width: 300px; text-align: center;">
+                    Analyzing ingredients, calculating nutrition, and optimizing for your goals...
+                </p>
+                <div class="loader-dots">
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                </div>
+                <div class="tip-carousel" id="tipCarousel">
+                    <div class="tip-item active">
+                        <i class="fas fa-lightbulb"></i> Did you know? You can customize any recipe by adjusting the macros!
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i> Pro tip: Use the pantry mode to save money by using ingredients you already have!
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i> Healthy swaps can save up to 50% calories without sacrificing taste!
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i> Download recipes as text file to cook offline anytime!
+                    </div>
+                    <div class="tip-item">
+                        <i class="fas fa-lightbulb"></i> Watch recipe videos directly in the app for visual guidance!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="output-area" class="hidden">
+            <!-- Error Container -->
+            <div id="error-container" class="error-container hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3 id="error-title">Oops! Something went wrong</h3>
+                <p id="error-message">We encountered an issue while generating your recipe. Please try again.</p>
+                <button onclick="location.reload()" class="retry-button">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+            
+            <!-- Cheat Meal Hack Section -->
+            <div id="cheat-hack-section" class="cheat-hack hidden">
+                <h4><i class="fas fa-exchange-alt"></i> <span id="your-cheat-hack">Your Cheat Meal Hack</span></h4>
+                <div class="cheat-comparison">
+                    <div class="cheat-original">
+                        <h5><i class="fas fa-times-circle"></i> <span id="original-label">Original</span></h5>
+                        <div id="original-cheat"></div>
+                    </div>
+                    <div class="cheat-healthy">
+                        <h5><i class="fas fa-check-circle"></i> <span id="healthy-hack-label">Healthy Hack</span></h5>
+                        <div id="healthy-hack"></div>
+                    </div>
+                </div>
+                <p id="cheat-savings"></p>
+            </div>
+            
+            <!-- Meal Plan Section -->
+            <div id="meal-plan-section" class="hidden">
+                <h2 style="color: var(--accent);"><i class="fas fa-calendar-alt"></i> <span id="meal-plan-title">Your Personalized Meal Plan</span></h2>
+                <div id="meal-plan-content"></div>
+            </div>
+            
+            <!-- Price Accuracy Note -->
+            <div class="price-accuracy" style="display: none;" id="price-note">
+                <i class="fas fa-info-circle"></i> 
+                <span id="price-note-text">Prices are estimates based on average market rates. Actual costs may vary by location and season.</span>
+            </div>
+            
+            <!-- Main Recipe -->
+            <div id="printable-area">
+                <h2 id="recipe-name" style="color:var(--accent); margin-top:0;"></h2>
+                <div class="recipe-meta" id="recipe-meta"></div>
+                <div id="nutrition-data" class="nutrition-badge"></div>
+                <div id="recipe-content"></div>
+            </div>
+            
+            <!-- Cost Breakdown Section -->
+            <div id="cost-breakdown" class="cost-breakdown hidden">
+                <h3><i class="fas fa-rupee-sign"></i> <span id="cost-analysis">Cost Per Meal Analysis</span></h3>
+                <div id="cost-details"></div>
+                <div id="swap-suggestions" class="swap-suggestion hidden">
+                    <i class="fas fa-lightbulb"></i> <span id="swap-text"></span>
+                </div>
+            </div>
+            
+            <!-- Video Section -->
+            <div id="video-box" class="video-container hidden">
+                <iframe id="recipe-video" src="" frameborder="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid-options" style="grid-template-columns: 1fr 1fr 1fr;">
+                <button onclick="copyRecipe()"><i class="fas fa-copy"></i> <span id="copy-btn">Copy</span></button>
+                <button onclick="downloadTXT()" style="background: var(--accent); color:#000;">
+                    <i class="fas fa-file-alt"></i> <span id="txt-btn">Save Text</span>
+                </button>
+                <button onclick="showScreen('screen-home')" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-home"></i> <span id="home-btn">Home</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Action Button for Home -->
+<div class="floating-action">
+    <button class="fab" onclick="showScreen('screen-home')" title="Go Home">
+        <i class="fas fa-home"></i>
+    </button>
+</div>
+
+<script>
+    let choices = { mode: 'standard', showCostBreakdown: true };
+    
+    // Environment variables - these will be replaced during Vercel deployment
+    const OPENROUTER_KEY = "%%OPENROUTER_API_KEY%%";
+    const YT_API_KEY = "%%YOUTUBE_API_KEY%%";
+    
+    // Current language
+    let currentLang = 'en';
+    let currentGenerationType = null; // Track current generation type to prevent mixing
+    let loadingInterval;
+    let tipInterval;
+    
+    // Language translations
+    const translations = {
+        en: {
+            tagline: "AI-Powered Nutrition & Smart Meal Planning",
+            cheatTitle: "Cheat Meal Converter",
+            cheatDesc: "Turn your cravings into healthy, protein-packed versions. AI-powered substitutions that keep the flavor but boost nutrition.",
+            specificTitle: "Specific Recipe",
+            specificDesc: "Get detailed recipe for any dish you want - ingredients, instructions & nutrition facts.",
+            aiMealTitle: "AI Meal Plan",
+            aiMealDesc: "Personalized meal planning based on goals, preferences, and dietary needs.",
+            tryNow: "Try it now",
+            getRecipe: "Get Recipe",
+            planMeal: "Plan Meal",
+            standardBtn: "Standard",
+            pantryBtn: "Smart Pantry",
+            standardTitle: "Standard Mode",
+            standardDescText: "Full meal planning by region, goals, and targets with cost analysis.",
+            startStandard: "Start Standard Plan",
+            pantryTitle: "Pantry Mode",
+            pantryDescText: "Tell us what you have; we'll tell you what to make with cost-per-meal breakdown.",
+            buildIngredients: "Build from Ingredients",
+            specificScreenTitle: "Specific Recipe Generator",
+            specificScreenDesc: "Enter the name of any dish you want to make, and we'll give you a complete recipe with nutrition facts!",
+            specificInfo: "Examples: 'Chicken Biryani', 'Vegetable Lasagna', 'Butter Chicken', 'Chocolate Cake', 'Paneer Tikka'",
+            includeNutrition: "Include Nutrition Facts",
+            includeCost: "Include Cost Analysis",
+            generateRecipe: "Generate Complete Recipe",
+            cheatScreenTitle: "Cheat Meal Converter",
+            cheatScreenDesc: "Craving something indulgent? We'll transform it into a healthier, protein-packed version!",
+            includeMacros: "Include Macros Target",
+            convertButton: "Convert to Healthy Version",
+            backHome: "Back to Home",
+            aiMealScreenTitle: "AI Meal Plan",
+            aiMealScreenDesc: "Get personalized meal plans based on your dietary preferences and goals.",
+            aiMealInfo: "Select your preferences below to generate a complete meal plan",
+            includeShopping: "Include Shopping List",
+            generatePlanBtn: "Generate Meal Plan",
+            chooseCuisine: "Choose Cuisine",
+            mealType: "Meal Type",
+            breakfast: "Breakfast",
+            lunch: "Lunch",
+            dinner: "Dinner",
+            snack: "Snack",
+            fitnessGoal: "Fitness Goal",
+            fatLoss: "Fat Loss",
+            muscleGain: "Muscle Gain",
+            maintenance: "Maintenance",
+            endurance: "Endurance",
+            macroTargets: "Macro Targets",
+            macroDesc: "Enter your targets - AI will strictly follow these numbers!",
+            showCost: "Show Cost Breakdown",
+            generatePlan: "Generate Pro Plan",
+            aiCooking: "AI Cooking...",
+            yourCheatHack: "Your Cheat Meal Hack",
+            originalLabel: "Original",
+            healthyHackLabel: "Healthy Hack",
+            mealPlanTitle: "Your Personalized Meal Plan",
+            costAnalysis: "Cost Per Meal Analysis",
+            copyBtn: "Copy",
+            txtBtn: "Save Text",
+            homeBtn: "Home",
+            newBtn: "New",
+            aboutIntro: "FitFuel Pro is an AI-powered nutrition assistant that helps you create healthy, personalized meal plans based on your goals, preferences, and available ingredients.",
+            loaderTitle: "AI Chef is Crafting Your Recipe",
+            loaderMessage: "Analyzing ingredients, calculating nutrition, and optimizing for your goals...",
+            priceNote: "Prices are estimates based on average market rates. Actual costs may vary by location and season.",
+            cheatLoader: "Transforming your cheat meal into a healthy version...",
+            pantryLoader: "Creating recipes from your pantry items...",
+            specificLoader: "Generating your specific recipe...",
+            mealPlanLoader: "Creating your personalized meal plan..."
+        },
+        hi: {
+            tagline: "AI-संचालित पोषण और स्मार्ट भोजन योजना",
+            cheatTitle: "चीट मील कन्वर्टर",
+            cheatDesc: "अपनी क्रेविंग्स को हेल्दी, प्रोटीन से भरपूर वर्जन में बदलें। AI-संचालित सब्स्टिट्यूशन जो स्वाद बनाए रखते हैं लेकिन न्यूट्रिशन बढ़ाते हैं।",
+            specificTitle: "विशिष्ट रेसिपी",
+            specificDesc: "किसी भी डिश की विस्तृत रेसिपी प्राप्त करें - सामग्री, निर्देश और पोषण तथ्य।",
+            aiMealTitle: "AI भोजन योजना",
+            aiMealDesc: "लक्ष्यों, प्राथमिकताओं और आहार संबंधी आवश्यकताओं के आधार पर व्यक्तिगत भोजन योजना।",
+            tryNow: "अभी आज़माएं",
+            getRecipe: "रेसिपी प्राप्त करें",
+            planMeal: "भोजन योजना",
+            standardBtn: "मानक",
+            pantryBtn: "स्मार्ट पेंट्री",
+            standardTitle: "मानक मोड",
+            standardDescText: "क्षेत्र, लक्ष्य और टारगेट के आधार पर पूरी भोजन योजना लागत विश्लेषण के साथ।",
+            startStandard: "मानक योजना शुरू करें",
+            pantryTitle: "पेंट्री मोड",
+            pantryDescText: "हमें बताएं कि आपके पास क्या है; हम आपको बताएंगे कि क्या बनाना है प्रति भोजन लागत विश्लेषण के साथ।",
+            buildIngredients: "सामग्री से बनाएं",
+            specificScreenTitle: "विशिष्ट रेसिपी जेनरेटर",
+            specificScreenDesc: "किसी भी डिश का नाम दर्ज करें जिसे आप बनाना चाहते हैं, और हम आपको पोषण तथ्यों के साथ एक पूरी रेसिपी देंगे!",
+            specificInfo: "उदाहरण: 'चिकन बिरयानी', 'वेजिटेबल लसग्ना', 'बटर चिकन', 'चॉकलेट केक', 'पनीर टिक्का'",
+            includeNutrition: "पोषण तथ्य शामिल करें",
+            includeCost: "लागत विश्लेषण शामिल करें",
+            generateRecipe: "पूरी रेसिपी जेनरेट करें",
+            cheatScreenTitle: "चीट मील कन्वर्टर",
+            cheatScreenDesc: "कुछ इंडलजेंट खाने का मन कर रहा है? हम इसे हेल्दी, प्रोटीन से भरपूर वर्जन में बदल देंगे!",
+            includeMacros: "मैक्रोस टारगेट शामिल करें",
+            convertButton: "हेल्दी वर्जन में बदलें",
+            backHome: "होम पर वापस जाएं",
+            aiMealScreenTitle: "AI भोजन योजना",
+            aiMealScreenDesc: "अपनी आहार संबंधी प्राथमिकताओं और लक्ष्यों के आधार पर व्यक्तिगत भोजन योजनाएं प्राप्त करें।",
+            aiMealInfo: "एक पूरी भोजन योजना बनाने के लिए नीचे अपनी प्राथमिकताएं चुनें",
+            includeShopping: "शॉपिंग सूची शामिल करें",
+            generatePlanBtn: "भोजन योजना जेनरेट करें",
+            chooseCuisine: "कुज़ीन चुनें",
+            mealType: "भोजन का प्रकार",
+            breakfast: "नाश्ता",
+            lunch: "लंच",
+            dinner: "डिनर",
+            snack: "स्नैक",
+            fitnessGoal: "फिटनेस लक्ष्य",
+            fatLoss: "फैट लॉस",
+            muscleGain: "मसल गेन",
+            maintenance: "मेंटेनेंस",
+            endurance: "एंड्योरेंस",
+            macroTargets: "मैक्रो टारगेट",
+            macroDesc: "अपने लक्ष्य दर्ज करें - AI इन नंबरों का सख्ती से पालन करेगा!",
+            showCost: "लागत विश्लेषण दिखाएं",
+            generatePlan: "प्रो प्लान जेनरेट करें",
+            aiCooking: "AI खाना बना रहा है...",
+            yourCheatHack: "आपका चीट मील हैक",
+            originalLabel: "ओरिजिनल",
+            healthyHackLabel: "हेल्दी हैक",
+            mealPlanTitle: "आपकी व्यक्तिगत भोजन योजना",
+            costAnalysis: "प्रति भोजन लागत विश्लेषण",
+            copyBtn: "कॉपी",
+            txtBtn: "सेव टेक्स्ट",
+            homeBtn: "होम",
+            newBtn: "नया",
+            aboutIntro: "FitFuel Pro एक AI-संचालित पोषण सहायक है जो आपकी लक्ष्य, प्राथमिकताओं और उपलब्ध सामग्री के आधार पर स्वस्थ, व्यक्तिगत भोजन योजनाएं बनाने में मदद करता है।",
+            loaderTitle: "AI शेफ आपकी रेसिपी बना रहा है",
+            loaderMessage: "सामग्रियों का विश्लेषण, पोषण गणना और आपके लक्ष्यों के लिए अनुकूलन...",
+            priceNote: "कीमतें औसत बाजार दरों के आधार पर अनुमान हैं। वास्तविक लागत स्थान और मौसम के अनुसार भिन्न हो सकती है।",
+            cheatLoader: "आपके चीट मील को हेल्दी वर्जन में बदल रहा है...",
+            pantryLoader: "आपकी पेंट्री वस्तुओं से रेसिपी बना रहा है...",
+            specificLoader: "आपकी विशिष्ट रेसिपी जेनरेट कर रहा है...",
+            mealPlanLoader: "आपकी व्यक्तिगत भोजन योजना बना रहा है..."
+        },
+        ta: {
+            tagline: "AI-இயக்கப்பட்ட ஊட்டச்சத்து மற்றும் ஸ்மார்ட் உணவு திட்டமிடல்",
+            cheatTitle: "ஏமாற்றும் உணவு மாற்றி",
+            cheatDesc: "உங்கள் விருப்பங்களை ஆரோக்கியமான, புரோட்டீன் நிறைந்த பதிப்புகளாக மாற்றவும். AI-இயக்கப்பட்ட மாற்றுகள் சுவையை பராமரிக்கின்றன ஆனால் ஊட்டச்சத்தை அதிகரிக்கின்றன.",
+            specificTitle: "குறிப்பிட்ட செய்முறை",
+            specificDesc: "நீங்கள் விரும்பும் எந்த டிஷின் விரிவான செய்முறையையும் பெறுங்கள் - பொருட்கள், அறிவுறுத்தல்கள் மற்றும் ஊட்டச்சத்து உண்மைகள்.",
+            aiMealTitle: "AI உணவு திட்டம்",
+            aiMealDesc: "இலக்குகள், விருப்பங்கள் மற்றும் உணவு தேவைகளின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட உணவு திட்டமிடல்.",
+            tryNow: "இப்போது முயற்சிக்கவும்",
+            getRecipe: "செய்முறை பெறுக",
+            planMeal: "உணவு திட்டம்",
+            standardBtn: "நிலையான",
+            pantryBtn: "ஸ்மார்ட் களஞ்சியம்",
+            standardTitle: "நிலையான முறை",
+            standardDescText: "முழு உணவு திட்டமிடல் பிராந்தியம், இலக்குகள் மற்றும் இலக்குகள் மூலம் செலவு பகுப்பாய்வுடன்.",
+            startStandard: "நிலையான திட்டத்தை தொடங்கவும்",
+            pantryTitle: "களஞ்சிய முறை",
+            pantryDescText: "உங்களிடம் என்ன இருக்கிறது என்று சொல்லுங்கள்; ஒவ்வொரு உணவுக்கான செலவு பிரித்தளிப்புடன் என்ன செய்ய வேண்டும் என்று நாங்கள் சொல்வோம்.",
+            buildIngredients: "பொருட்களிலிருந்து உருவாக்கவும்",
+            specificScreenTitle: "குறிப்பிட்ட செய்முறை ஜெனரேட்டர்",
+            specificScreenDesc: "நீங்கள் தயாரிக்க விரும்பும் எந்த டிஷின் பெயரையும் உள்ளிடவும், மேலும் ஊட்டச்சத்து உண்மைகளுடன் ஒரு முழுமையான செய்முறையை நாங்கள் உங்களுக்கு வழங்குவோம்!",
+            specificInfo: "எடுத்துக்காட்டுகள்: 'சிக்கன் பிரியாணி', 'காய்கறி லசாக்னா', 'வெண்ணை கோழி', 'சாக்லேட் கேக்', 'பன்னீர் டிக்கா'",
+            includeNutrition: "ஊட்டச்சத்து உண்மைகளை சேர்க்கவும்",
+            includeCost: "செலவு பகுப்பாய்வை சேர்க்கவும்",
+            generateRecipe: "முழுமையான செய்முறையை உருவாக்கவும்",
+            cheatScreenTitle: "ஏமாற்றும் உணவு மாற்றி",
+            cheatScreenDesc: "ஏதாவது சுகமான உணவு விரும்புகிறீர்களா? நாங்கள் அதை ஆரோக்கியமான, புரோட்டீன் நிறைந்த பதிப்பாக மாற்றுவோம்!",
+            includeMacros: "மேக்ரோஸ் இலக்கை சேர்க்கவும்",
+            convertButton: "ஆரோக்கியமான பதிப்பாக மாற்றவும்",
+            backHome: "முகப்புக்கு திரும்புக",
+            aiMealScreenTitle: "AI உணவு திட்டம்",
+            aiMealScreenDesc: "உங்கள் உணவு விருப்பங்கள் மற்றும் இலக்குகளின் அடிப்படையில் தனிப்பயனாக்கப்பட்ட உணவு திட்டங்களைப் பெறுங்கள்.",
+            aiMealInfo: "ஒரு முழுமையான உணவு திட்டத்தை உருவாக்க கீழே உங்கள் விருப்பங்களைத் தேர்ந்தெடுக்கவும்",
+            includeShopping: "ஷாப்பிங் பட்டியலை சேர்க்கவும்",
+            generatePlanBtn: "உணவு திட்டத்தை உருவாக்கவும்",
+            chooseCuisine: "சமையலை தேர்ந்தெடுக்கவும்",
+            mealType: "உணவு வகை",
+            breakfast: "காலை உணவு",
+            lunch: "மதிய உணவு",
+            dinner: "இரவு உணவு",
+            snack: "சிற்றுண்டி",
+            fitnessGoal: "உடற்திறன் இலக்கு",
+            fatLoss: "கொழுப்பு இழப்பு",
+            muscleGain: "தசை அதிகரிப்பு",
+            maintenance: "பராமரிப்பு",
+            endurance: "சுறுசுறுப்பு",
+            macroTargets: "மேக்ரோ இலக்குகள்",
+            macroDesc: "உங்கள் இலக்குகளை உள்ளிடவும் - AI இந்த எண்களை கண்டிப்பாக பின்பற்றும்!",
+            showCost: "செலவு பிரித்தளிப்பை காட்டு",
+            generatePlan: "புரோ திட்டத்தை உருவாக்கு",
+            aiCooking: "AI சமைக்கிறது...",
+            yourCheatHack: "உங்கள் ஏமாற்றும் உணவு ஹேக்",
+            originalLabel: "அசல்",
+            healthyHackLabel: "ஆரோக்கியமான ஹேக்",
+            mealPlanTitle: "உங்கள் தனிப்பயனாக்கப்பட்ட உணவு திட்டம்",
+            costAnalysis: "ஒவ்வொரு உணவுக்கான செலவு பகுப்பாய்வு",
+            copyBtn: "நகலெடு",
+            txtBtn: "சேவ் டெக்ஸ்ட்",
+            homeBtn: "முகப்பு",
+            newBtn: "புதியது",
+            aboutIntro: "FitFuel Pro என்பது ஒரு AI-இயக்கப்பட்ட ஊட்டச்சத்து உதவியாளர் ஆகும், இது உங்கள் இலக்குகள், விருப்பங்கள் மற்றும் கிடைக்கக்கூடிய பொருட்களின் அடிப்படையில் ஆரோக்கியமான, தனிப்பட்ட உணவு திட்டங்களை உருவாக்க உதவுகிறது.",
+            loaderTitle: "AI சமையல்காரர் உங்கள் செய்முறையை உருவாக்குகிறார்",
+            loaderMessage: "பொருட்களை பகுப்பாய்வு செய்தல், ஊட்டச்சத்து கணக்கிடுதல் மற்றும் உங்கள் இலக்குகளுக்கு உகந்ததாக்குதல்...",
+            priceNote: "விலைகள் சராசரி சந்தை விகிதங்களின் அடிப்படையில் மதிப்பீடுகள். உண்மையான செலவுகள் இடம் மற்றும் பருவத்தின் அடிப்படையில் மாறுபடலாம்.",
+            cheatLoader: "உங்கள் ஏமாற்றும் உணவை ஆரோக்கியமான பதிப்பாக மாற்றுகிறது...",
+            pantryLoader: "உங்கள் களஞ்சிய பொருட்களிலிருந்து செய்முறைகளை உருவாக்குகிறது...",
+            specificLoader: "உங்கள் குறிப்பிட்ட செய்முறையை உருவாக்குகிறது...",
+            mealPlanLoader: "உங்கள் தனிப்பயனாக்கப்பட்ட உணவு திட்டத்தை உருவாக்குகிறது..."
+        }
+    };
+
+    // Clear output area function
+    function clearOutputArea() {
+        // Hide all result sections
+        document.getElementById('cheat-hack-section').classList.add('hidden');
+        document.getElementById('meal-plan-section').classList.add('hidden');
+        document.getElementById('cost-breakdown').classList.add('hidden');
+        document.getElementById('video-box').classList.add('hidden');
+        document.getElementById('price-note').style.display = 'none';
+        
+        // Clear content
+        document.getElementById('recipe-name').innerHTML = '';
+        document.getElementById('recipe-meta').innerHTML = '';
+        document.getElementById('nutrition-data').innerHTML = '';
+        document.getElementById('recipe-content').innerHTML = '';
+        document.getElementById('cost-details').innerHTML = '';
+        document.getElementById('original-cheat').innerHTML = '';
+        document.getElementById('healthy-hack').innerHTML = '';
+        document.getElementById('cheat-savings').innerHTML = '';
+        document.getElementById('meal-plan-content').innerHTML = '';
+        
+        // Clear video
+        document.getElementById('recipe-video').src = '';
+    }
+
+    // Toggle for cheat meal macros
+    document.getElementById('cheatMacroToggle')?.addEventListener('change', function() {
+        document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
+    });
+
+    // Toggle for cost breakdown
+    document.getElementById('costToggle')?.addEventListener('change', function() {
+        choices.showCostBreakdown = this.checked;
+    });
+
+    function setMode(mode) {
+        choices.mode = mode;
+        document.getElementById('btn-mode-standard').classList.toggle('active-mode', mode === 'standard');
+        document.getElementById('btn-mode-pantry').classList.toggle('active-mode', mode === 'pantry');
+        document.getElementById('standard-desc').classList.toggle('hidden', mode !== 'standard');
+        document.getElementById('pantry-desc').classList.toggle('hidden', mode !== 'pantry');
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('#app-container > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        // Reset error container
+        document.getElementById('error-container')?.classList.add('hidden');
+    }
+
+    function save(key, val, next) {
+        choices[key] = val;
+        showScreen(next);
+    }
+
+    function startPantry() {
+        const input = document.getElementById('pantryInput').value;
+        if(!input.trim()) {
+            alert("Please enter ingredients!");
+            return;
+        }
+        choices.ingredients = input;
+        showScreen('screen-goal');
+    }
+
+    function finalizePro() {
+        choices.cals = document.getElementById('proCal').value || "Not specified";
+        choices.protein = document.getElementById('proProtein').value || "Not specified";
+        choices.carbs = document.getElementById('proCarbs').value || "Not specified";
+        choices.fiber = document.getElementById('proFiber').value || "Not specified";
+        choices.budget = document.getElementById('proBudget').value || "Not specified";
+        choices.showCostBreakdown = document.getElementById('costToggle').checked;
+        showScreen('screen-result');
+        currentGenerationType = 'standard';
+        generateProRecipe();
+    }
+
+    // Language change function
+    function changeLanguage(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+        
+        // Update all elements with translations
+        Object.keys(t).forEach(key => {
+            const element = document.getElementById(key);
+            if (element) {
+                element.textContent = t[key];
+            }
+        });
+        
+        // Update button texts that might have been changed
+        document.getElementById('copy-btn').textContent = t.copyBtn;
+        document.getElementById('txt-btn').textContent = t.txtBtn;
+        document.getElementById('home-btn').textContent = t.homeBtn;
+    }
+
+    // About modal functions
+    function showAbout() {
+        document.getElementById('about-modal').classList.remove('hidden');
+    }
+
+    function hideAbout() {
+        document.getElementById('about-modal').classList.add('hidden');
+    }
+
+    // Show attractive loader with progress
+    function showLoader(type = 'standard') {
+        document.getElementById('loader').classList.remove('hidden');
+        document.getElementById('output-area').classList.add('hidden');
+        document.getElementById('error-container').classList.add('hidden');
+        
+        const loaderTitle = document.getElementById('loader-title');
+        const loaderMessage = document.getElementById('loader-message');
+        const loaderIcon = document.querySelector('.loader-icon i');
+        
+        if (type === 'cheat') {
+            loaderTitle.textContent = translations[currentLang].cheatLoader;
+            loaderMessage.textContent = "Finding healthy substitutes and calculating nutritional benefits...";
+            loaderIcon.className = 'fas fa-exchange-alt';
+        } else if (type === 'pantry') {
+            loaderTitle.textContent = translations[currentLang].pantryLoader;
+            loaderMessage.textContent = "Analyzing your ingredients and creating delicious combinations...";
+            loaderIcon.className = 'fas fa-egg';
+        } else if (type === 'specific') {
+            loaderTitle.textContent = translations[currentLang].specificLoader;
+            loaderMessage.textContent = "Gathering ingredients, creating instructions, and calculating nutrition...";
+            loaderIcon.className = 'fas fa-utensil-spoon';
+        } else if (type === 'mealplan') {
+            loaderTitle.textContent = translations[currentLang].mealPlanLoader;
+            loaderMessage.textContent = "Creating personalized meal plans with shopping lists and nutrition info...";
+            loaderIcon.className = 'fas fa-calendar-alt';
+        } else {
+            loaderTitle.textContent = translations[currentLang].loaderTitle;
+            loaderMessage.textContent = translations[currentLang].loaderMessage;
+            loaderIcon.className = 'fas fa-utensils';
+        }
+        
+        // Start progress animation
+        let progress = 0;
+        const progressBar = document.getElementById('loader-progress');
+        const percentageText = document.getElementById('loader-percentage');
+        
+        if (loadingInterval) clearInterval(loadingInterval);
+        
+        loadingInterval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress >= 90) {
+                progress = 90;
+                clearInterval(loadingInterval);
+            }
+            progressBar.style.width = progress + '%';
+            percentageText.textContent = Math.round(progress) + '%';
+        }, 300);
+        
+        // Start tip carousel
+        startTipCarousel();
+    }
+
+    // Tip carousel
+    function startTipCarousel() {
+        if (tipInterval) clearInterval(tipInterval);
+        
+        const tips = document.querySelectorAll('.tip-item');
+        let currentTip = 0;
+        
+        tips.forEach((tip, index) => {
+            tip.classList.toggle('active', index === 0);
+        });
+        
+        tipInterval = setInterval(() => {
+            tips[currentTip].classList.remove('active');
+            currentTip = (currentTip + 1) % tips.length;
+            tips[currentTip].classList.add('active');
+        }, 3000);
+    }
+
+    // Show error message
+    function showError(title, message) {
+        if (loadingInterval) clearInterval(loadingInterval);
+        if (tipInterval) clearInterval(tipInterval);
+        
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('output-area').classList.remove('hidden');
+        document.getElementById('error-container').classList.remove('hidden');
+        
+        document.getElementById('error-title').textContent = title;
+        document.getElementById('error-message').textContent = message;
+    }
+
+    // Disable button during processing
+    function disableButton(buttonId, disable) {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.disabled = disable;
+            button.innerHTML = disable ? 
+                `<i class="fas fa-spinner fa-spin"></i> Processing...` :
+                `<i class="fas fa-utensils"></i> Generate`;
+        }
+    }
+
+    async function generateProRecipe() {
+        // Check if API keys are available
+        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+            showError(
+                "API Key Not Configured",
+                "Please set up your OpenRouter API key in Vercel environment variables."
+            );
+            return;
+        }
+
+        // Clear previous content first
+        clearOutputArea();
+        
+        showLoader(choices.mode === 'pantry' ? 'pantry' : 'standard');
+        
+        // Strict macro instructions
+        let macroInstructions = "";
+        if (choices.protein !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.protein}g of protein MUST be in this recipe.`;
+        if (choices.cals !== "Not specified") macroInstructions += `\n- MAXIMUM ${choices.cals} calories total.`;
+        if (choices.carbs !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.carbs}g of carbohydrates.`;
+        if (choices.fiber !== "Not specified") macroInstructions += `\n- AT LEAST ${choices.fiber}g of fiber.`;
+        if (choices.budget !== "Not specified") macroInstructions += `\n- Total cost MUST be under ${choices.budget}.`;
+
+        const base = choices.mode === 'standard' 
+            ? `Create a ${choices.region} ${choices.meal} recipe for ${choices.goal} goal.` 
+            : `Create a recipe using ONLY these ingredients: ${choices.ingredients}. You can add salt, oil, and basic spices only. Do not add any other main ingredients.`;
+
+        // Add language instruction for AI
+        const languageInstruction = currentLang === 'en' ? 'Generate response in English.' : 
+            currentLang === 'hi' ? 'Generate response in Hindi language.' :
+            'Generate response in Tamil language.';
+
+        const prompt = `${base}
+        
+        STRICT REQUIREMENTS - MUST FOLLOW EXACTLY:
+        ${macroInstructions || "No specific macro targets provided, optimize for health."}
+        
+        ${languageInstruction}
+        
+        IMPORTANT: 
+        - If this is pantry mode, ONLY use the exact ingredients listed plus minimal oil, salt, and basic spices
+        - Calculate nutrition accurately
+        - Use realistic market prices for ingredients
+        
+        Return ONLY valid JSON (no other text): {
+            "title": "Recipe title",
+            "description": "Brief description",
+            "prep_time": "X mins",
+            "cook_time": "X mins",
+            "servings": 2,
+            "difficulty": "Easy/Medium/Hard",
+            "ingredients": [
+                {"name": "ingredient", "quantity": "amount", "notes": ""}
+            ],
+            "instructions": ["Step 1", "Step 2", "Step 3"],
+            "nutrition": {
+                "calories": "XXX cal",
+                "protein": "XX g",
+                "carbs": "XX g",
+                "fat": "XX g",
+                "fiber": "XX g"
+            },
+            "tips": ["Tip 1", "Tip 2"],
+            "cost_breakdown": {
+                "total_cost": "₹XXX",
+                "per_serving": "₹XXX",
+                "ingredient_costs": [
+                    {"name": "ingredient", "cost": "₹XX", "quantity": "amount"}
+                ],
+                "budget_swap": "Optional budget-friendly suggestion"
+            }
+        }`;
+
+        try {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${OPENROUTER_KEY}`, 
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "X-Title": "FitFuel Pro"
+                },
+                body: JSON.stringify({
+                    "model": "stepfun/step-3.5-flash:free",
+                    "messages": [{ "role": "user", "content": prompt }],
+                    "temperature": 0.3 // Lower temperature for more precise following of instructions
+                })
+            });
+            
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status} ${res.statusText}`);
+            }
+            
+            const data = await res.json();
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid API response');
+            }
+            
+            // Clean the response to ensure it's valid JSON
+            let content = data.choices[0].message.content;
+            // Remove any markdown code blocks if present
+            content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            
+            const recipe = JSON.parse(content);
+            
+            // Complete progress
+            if (loadingInterval) clearInterval(loadingInterval);
+            document.getElementById('loader-progress').style.width = '100%';
+            document.getElementById('loader-percentage').textContent = '100%';
+            
+            // Add slight delay for better UX
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('output-area').classList.remove('hidden');
+                renderRecipe(recipe);
+                if (choices.showCostBreakdown && recipe.cost_breakdown) {
+                    renderCostBreakdown(recipe.cost_breakdown);
+                }
+                fetchVideo(recipe.title + " recipe");
+                if (tipInterval) clearInterval(tipInterval);
+            }, 500);
+            
+        } catch (e) {
+            console.error('Error:', e);
+            showError(
+                "Oops! Something went wrong",
+                "We encountered an issue while generating your recipe. Please check your connection and try again."
+            );
+        }
+    }
+
+    // New Specific Recipe Generator
+    async function generateSpecificRecipe() {
+        // Check if API keys are available
+        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+            showError(
+                "API Key Not Configured",
+                "Please set up your OpenRouter API key in Vercel environment variables."
+            );
+            return;
+        }
+
+        // Clear previous content first
+        clearOutputArea();
+        
+        const dishName = document.getElementById('specificInput').value;
+        if (!dishName.trim()) {
+            alert("Please enter a dish name!");
+            return;
+        }
+        
+        const includeNutrition = document.getElementById('nutritionToggle').checked;
+        const includeCost = document.getElementById('costToggleSpecific').checked;
+        
+        // Disable button during processing
+        disableButton('generateSpecificBtn', true);
+        
+        showScreen('screen-result');
+        showLoader('specific');
+        currentGenerationType = 'specific';
+        
+        const languageInstruction = currentLang === 'en' ? 'Generate response in English.' : 
+            currentLang === 'hi' ? 'Generate response in Hindi language.' :
+            'Generate response in Tamil language.';
+        
+        const prompt = `Create a detailed recipe for: ${dishName}
+        ${includeNutrition ? 'Include detailed nutrition facts.' : ''}
+        ${includeCost ? 'Include cost breakdown with realistic market prices.' : ''}
+        ${languageInstruction}
+        
+        Use realistic measurements and cooking instructions.
+        
+        Return ONLY valid JSON (no other text): {
+            "title": "Recipe title",
+            "description": "Brief description",
+            "cuisine": "Cuisine type",
+            "meal_type": "Breakfast/Lunch/Dinner/Snack",
+            "prep_time": "X mins",
+            "cook_time": "X mins",
+            "servings": "2-4",
+            "difficulty": "Easy/Medium/Hard",
+            "ingredients": [
+                {"name": "ingredient", "quantity": "amount", "notes": ""}
+            ],
+            "instructions": ["Step 1", "Step 2", "Step 3"],
+            "nutrition": {
+                "calories": "XXX cal",
+                "protein": "XX g",
+                "carbs": "XX g",
+                "fat": "XX g",
+                "fiber": "XX g"
+            },
+            "tips": ["Tip 1", "Tip 2"],
+            "variations": ["Variation 1", "Variation 2"],
+            ${includeCost ? `"cost_breakdown": {
+                "total_cost": "₹XXX",
+                "per_serving": "₹XXX",
+                "ingredient_costs": [
+                    {"name": "ingredient", "cost": "₹XX", "quantity": "amount"}
+                ],
+                "budget_swap": "Optional budget-friendly suggestion"
+            },` : ''}
+            "note": "Any additional notes"
+        }`;
+        
+        try {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${OPENROUTER_KEY}`, 
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "X-Title": "FitFuel Pro"
+                },
+                body: JSON.stringify({
+                    "model": "stepfun/step-3.5-flash:free",
+                    "messages": [{ "role": "user", "content": prompt }],
+                    "temperature": 0.5
+                })
+            });
+            
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status} ${res.statusText}`);
+            }
+            
+            const data = await res.json();
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid API response');
+            }
+            
+            // Clean the response
+            let content = data.choices[0].message.content;
+            content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            
+            const recipe = JSON.parse(content);
+            
+            // Complete progress
+            if (loadingInterval) clearInterval(loadingInterval);
+            document.getElementById('loader-progress').style.width = '100%';
+            document.getElementById('loader-percentage').textContent = '100%';
+            
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('output-area').classList.remove('hidden');
+                
+                // Hide cheat meal section if visible
+                document.getElementById('cheat-hack-section').classList.add('hidden');
+                document.getElementById('meal-plan-section').classList.add('hidden');
+                
+                renderRecipe(recipe);
+                if (includeCost && recipe.cost_breakdown) {
+                    renderCostBreakdown(recipe.cost_breakdown);
+                } else {
+                    document.getElementById('cost-breakdown').classList.add('hidden');
+                }
+                fetchVideo(recipe.title + " recipe tutorial");
+                if (tipInterval) clearInterval(tipInterval);
+            }, 500);
+            
+        } catch (e) {
+            console.error('Error:', e);
+            showError(
+                "Recipe Generation Failed",
+                `Failed to generate recipe for "${dishName}". Please try again with a different dish name.`
+            );
+        } finally {
+            disableButton('generateSpecificBtn', false);
+        }
+    }
+
+    async function generateCheatMeal() {
+        // Check if API keys are available
+        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+            showError(
+                "API Key Not Configured",
+                "Please set up your OpenRouter API key in Vercel environment variables."
+            );
+            return;
+        }
+
+        // Clear previous content first
+        clearOutputArea();
+        
+        const craving = document.getElementById('cheatInput').value;
+        if (!craving.trim()) {
+            alert("Please describe your craving!");
+            return;
+        }
+        
+        const includeMacros = document.getElementById('cheatMacroToggle').checked;
+        let macroPrompt = "";
+        
+        if (includeMacros) {
+            const protein = document.getElementById('cheatProtein').value || "Not specified";
+            const calories = document.getElementById('cheatCalories').value || "Not specified";
+            const carbs = document.getElementById('cheatCarbs').value || "Not specified";
+            const budget = document.getElementById('cheatBudget').value || "Not specified";
+            macroPrompt = `Healthy version MUST have: Protein: ${protein}g, Max Calories: ${calories}, Max Carbs: ${carbs}g, Budget: ${budget}.`;
+        }
+        
+        // Disable button during processing
+        disableButton('generateCheatBtn', true);
+        
+        showScreen('screen-result');
+        showLoader('cheat');
+        currentGenerationType = 'cheat';
+        
+        const languageInstruction = currentLang === 'en' ? 'Generate response in English.' : 
+            currentLang === 'hi' ? 'Generate response in Hindi language.' :
+            'Generate response in Tamil language.';
+        
+        const prompt = `Craving: ${craving}. ${macroPrompt}
+        ${languageInstruction}
+        Create a "Cheat Meal Hack" that transforms this into a healthy, protein-rich version.
+        
+        Return ONLY valid JSON (no other text): {
+            "original": {
+                "description": "Typical version description",
+                "estimated_calories": "XXX",
+                "protein": "XX",
+                "carbs": "XX",
+                "fat": "XX",
+                "estimated_cost": "₹XXX"
+            },
+            "healthy_hack": {
+                "title": "Healthy version title",
+                "description": "Description of healthy version",
+                "key_substitutions": ["swap1", "swap2"],
+                "estimated_calories": "XXX",
+                "protein": "XX",
+                "carbs": "XX",
+                "fat": "XX",
+                "estimated_cost": "₹XXX"
+            },
+            "savings": "Saves approximately ₹XXX and reduces calories by XX%",
+            "recipe": {
+                "title": "Healthy recipe title",
+                "description": "Brief description",
+                "prep_time": "X mins",
+                "cook_time": "X mins",
+                "servings": 2,
+                "ingredients": [
+                    {"name": "ingredient", "quantity": "amount", "notes": ""}
+                ],
+                "instructions": ["Step 1", "Step 2", "Step 3"],
+                "nutrition": {
+                    "calories": "XXX cal",
+                    "protein": "XX g",
+                    "carbs": "XX g",
+                    "fat": "XX g",
+                    "fiber": "XX g"
+                },
+                "tips": ["Tip 1", "Tip 2"],
+                "cost_breakdown": {
+                    "total_cost": "₹XXX",
+                    "per_serving": "₹XXX",
+                    "ingredient_costs": [
+                        {"name": "ingredient", "cost": "₹XX", "quantity": "amount"}
+                    ]
+                }
+            }
+        }`;
+        
+        try {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${OPENROUTER_KEY}`, 
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "X-Title": "FitFuel Pro"
+                },
+                body: JSON.stringify({
+                    "model": "stepfun/step-3.5-flash:free",
+                    "messages": [{ "role": "user", "content": prompt }],
+                    "temperature": 0.5
+                })
+            });
+            
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status} ${res.statusText}`);
+            }
+            
+            const data = await res.json();
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid API response');
+            }
+            
+            // Clean the response
+            let content = data.choices[0].message.content;
+            content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            
+            const cheatMeal = JSON.parse(content);
+            
+            // Complete progress
+            if (loadingInterval) clearInterval(loadingInterval);
+            document.getElementById('loader-progress').style.width = '100%';
+            document.getElementById('loader-percentage').textContent = '100%';
+            
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('output-area').classList.remove('hidden');
+                
+                // Show cheat meal section
+                document.getElementById('cheat-hack-section').classList.remove('hidden');
+                document.getElementById('meal-plan-section').classList.add('hidden');
+                
+                document.getElementById('original-cheat').innerHTML = `
+                    <strong>${craving}</strong><br>
+                    ${cheatMeal.original.description}<br><br>
+                    <strong>Nutrition (per serving):</strong><br>
+                    Calories: ~${cheatMeal.original.estimated_calories}<br>
+                    Protein: ~${cheatMeal.original.protein}g<br>
+                    Carbs: ~${cheatMeal.original.carbs}g<br>
+                    Fat: ~${cheatMeal.original.fat}g<br><br>
+                    <strong>Estimated Cost:</strong> ${cheatMeal.original.estimated_cost}
+                `;
+                
+                document.getElementById('healthy-hack').innerHTML = `
+                    <strong>${cheatMeal.healthy_hack.title}</strong><br>
+                    ${cheatMeal.healthy_hack.description}<br><br>
+                    <strong>Key swaps:</strong> ${cheatMeal.healthy_hack.key_substitutions.join(', ')}<br><br>
+                    <strong>Nutrition (per serving):</strong><br>
+                    Calories: ${cheatMeal.healthy_hack.estimated_calories}<br>
+                    Protein: ${cheatMeal.healthy_hack.protein}g<br>
+                    Carbs: ${cheatMeal.healthy_hack.carbs}g<br>
+                    Fat: ${cheatMeal.healthy_hack.fat}g<br><br>
+                    <strong>Estimated Cost:</strong> ${cheatMeal.healthy_hack.estimated_cost}
+                `;
+                
+                document.getElementById('cheat-savings').innerHTML = `<strong>${cheatMeal.savings}</strong>`;
+                
+                // Add price accuracy note
+                document.getElementById('price-note').style.display = 'block';
+                document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
+                
+                // Render the actual recipe
+                renderRecipe(cheatMeal.recipe);
+                if (cheatMeal.recipe.cost_breakdown) {
+                    renderCostBreakdown(cheatMeal.recipe.cost_breakdown);
+                }
+                
+                if (tipInterval) clearInterval(tipInterval);
+            }, 500);
+            
+        } catch (e) {
+            console.error('Error:', e);
+            showError(
+                "Conversion Failed",
+                `Failed to convert "${craving}" into a healthy version. Please try again with a different description.`
+            );
+        } finally {
+            disableButton('generateCheatBtn', false);
+        }
+    }
+
+    // New Meal Plan Generator
+    async function generateMealPlan() {
+        // Check if API keys are available
+        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+            showError(
+                "API Key Not Configured",
+                "Please set up your OpenRouter API key in Vercel environment variables."
+            );
+            return;
+        }
+
+        // Clear previous content first
+        clearOutputArea();
+        
+        const dietPreference = document.getElementById('dietPreference').value;
+        const mealPlanType = document.getElementById('mealPlanType').value;
+        const days = document.getElementById('mealPlanDays').value;
+        const includeShopping = document.getElementById('shoppingToggle').checked;
+        
+        if (!dietPreference || !mealPlanType || !days) {
+            alert("Please fill in all fields!");
+            return;
+        }
+        
+        // Disable button during processing
+        disableButton('generateMealPlanBtn', true);
+        
+        showScreen('screen-result');
+        showLoader('mealplan');
+        currentGenerationType = 'mealplan';
+        
+        const languageInstruction = currentLang === 'en' ? 'Generate response in English.' : 
+            currentLang === 'hi' ? 'Generate response in Hindi language.' :
+            'Generate response in Tamil language.';
+        
+        const prompt = `Create a ${days}-day ${dietPreference} meal plan for ${mealPlanType}.
+        ${includeShopping ? 'Include a detailed shopping list.' : ''}
+        ${languageInstruction}
+        
+        Return ONLY valid JSON (no other text): {
+            "plan_title": "Meal plan title",
+            "description": "Brief description",
+            "days": ${days},
+            "total_estimated_cost": "₹XXX",
+            "average_calories_per_day": "XXXX-XXXX",
+            "meals": {
+                "day_1": {
+                    "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "snacks": ["Snack 1", "Snack 2"]
+                },
+                "day_2": {
+                    "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "snacks": ["Snack 1", "Snack 2"]
+                }
+            },
+            ${includeShopping ? `"shopping_list": {
+                "vegetables": ["item - quantity"],
+                "proteins": ["item - quantity"],
+                "grains": ["item - quantity"],
+                "dairy": ["item - quantity"],
+                "spices": ["item - quantity"],
+                "other": ["item - quantity"]
+            },` : ''}
+            "tips": ["Tip 1", "Tip 2"],
+            "note": "Additional notes"
+        }`;
+        
+        try {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${OPENROUTER_KEY}`, 
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "X-Title": "FitFuel Pro"
+                },
+                body: JSON.stringify({
+                    "model": "stepfun/step-3.5-flash:free",
+                    "messages": [{ "role": "user", "content": prompt }],
+                    "temperature": 0.5
+                })
+            });
+            
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status} ${res.statusText}`);
+            }
+            
+            const data = await res.json();
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid API response');
+            }
+            
+            // Clean the response
+            let content = data.choices[0].message.content;
+            content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            
+            const mealPlan = JSON.parse(content);
+            
+            // Complete progress
+            if (loadingInterval) clearInterval(loadingInterval);
+            document.getElementById('loader-progress').style.width = '100%';
+            document.getElementById('loader-percentage').textContent = '100%';
+            
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('output-area').classList.remove('hidden');
+                
+                // Hide other sections
+                document.getElementById('cheat-hack-section').classList.add('hidden');
+                document.getElementById('meal-plan-section').classList.remove('hidden');
+                
+                renderMealPlan(mealPlan);
+                
+                if (tipInterval) clearInterval(tipInterval);
+            }, 500);
+            
+        } catch (e) {
+            console.error('Error:', e);
+            showError(
+                "Meal Plan Generation Failed",
+                "Failed to generate meal plan. Please try again with different preferences."
+            );
+        } finally {
+            disableButton('generateMealPlanBtn', false);
+        }
+    }
+
+    function renderMealPlan(plan) {
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('output-area').classList.remove('hidden');
+        
+        document.getElementById('meal-plan-title').textContent = plan.plan_title;
+        
+        let mealPlanHtml = `
+            <div class="alert alert-success">
+                <i class="fas fa-info-circle"></i>
+                ${plan.description}
+            </div>
+            
+            <div class="recipe-meta">
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>${plan.days} Days</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-fire"></i>
+                    <span>${plan.average_calories_per_day} calories/day</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-rupee-sign"></i>
+                    <span>Total Estimated Cost: ${plan.total_estimated_cost}</span>
+                </div>
+            </div>
+        `;
+        
+        // Render each day's meals
+        for (let day = 1; day <= plan.days; day++) {
+            const dayKey = `day_${day}`;
+            if (plan.meals[dayKey]) {
+                const dayMeals = plan.meals[dayKey];
+                mealPlanHtml += `
+                    <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.05);">
+                        <h3 style="color: var(--accent); margin-top: 0;">Day ${day}</h3>
+                        
+                        <h4><i class="fas fa-sun"></i> Breakfast</h4>
+                        <p><strong>${dayMeals.breakfast.name}</strong> - ${dayMeals.breakfast.description}</p>
+                        <div style="display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; flex-wrap: wrap;">
+                            <span><i class="fas fa-fire"></i> ${dayMeals.breakfast.calories}</span>
+                            <span><i class="fas fa-dumbbell"></i> ${dayMeals.breakfast.protein}</span>
+                            <span><i class="fas fa-clock"></i> ${dayMeals.breakfast.prep_time}</span>
+                        </div>
+                        
+                        <h4><i class="fas fa-sun"></i> Lunch</h4>
+                        <p><strong>${dayMeals.lunch.name}</strong> - ${dayMeals.lunch.description}</p>
+                        <div style="display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; flex-wrap: wrap;">
+                            <span><i class="fas fa-fire"></i> ${dayMeals.lunch.calories}</span>
+                            <span><i class="fas fa-dumbbell"></i> ${dayMeals.lunch.protein}</span>
+                            <span><i class="fas fa-clock"></i> ${dayMeals.lunch.prep_time}</span>
+                        </div>
+                        
+                        <h4><i class="fas fa-moon"></i> Dinner</h4>
+                        <p><strong>${dayMeals.dinner.name}</strong> - ${dayMeals.dinner.description}</p>
+                        <div style="display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; flex-wrap: wrap;">
+                            <span><i class="fas fa-fire"></i> ${dayMeals.dinner.calories}</span>
+                            <span><i class="fas fa-dumbbell"></i> ${dayMeals.dinner.protein}</span>
+                            <span><i class="fas fa-clock"></i> ${dayMeals.dinner.prep_time}</span>
+                        </div>
+                `;
+                
+                if (dayMeals.snacks && dayMeals.snacks.length > 0) {
+                    mealPlanHtml += `
+                        <h4><i class="fas fa-apple-alt"></i> Snacks</h4>
+                        <ul>
+                            ${dayMeals.snacks.map(snack => `<li>${snack}</li>`).join('')}
+                        </ul>
+                    `;
+                }
+                
+                mealPlanHtml += `</div>`;
+            }
+        }
+        
+        // Add shopping list if available
+        if (plan.shopping_list) {
+            mealPlanHtml += `
+                <div style="background: rgba(52, 152, 219, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(52, 152, 219, 0.3);">
+                    <h3 style="color: var(--blue); margin-top: 0;"><i class="fas fa-shopping-cart"></i> Shopping List</h3>
+            `;
+            
+            if (plan.shopping_list.vegetables && plan.shopping_list.vegetables.length > 0) {
+                mealPlanHtml += `
+                    <h4>Vegetables</h4>
+                    <ul>
+                        ${plan.shopping_list.vegetables.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            
+            if (plan.shopping_list.proteins && plan.shopping_list.proteins.length > 0) {
+                mealPlanHtml += `
+                    <h4>Proteins</h4>
+                    <ul>
+                        ${plan.shopping_list.proteins.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            
+            if (plan.shopping_list.grains && plan.shopping_list.grains.length > 0) {
+                mealPlanHtml += `
+                    <h4>Grains</h4>
+                    <ul>
+                        ${plan.shopping_list.grains.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            
+            mealPlanHtml += `</div>`;
+        }
+        
+        // Add tips if available
+        if (plan.tips && plan.tips.length > 0) {
+            mealPlanHtml += `
+                <div class="swap-suggestion">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Tips:</strong> ${plan.tips.join(' ')}
+                </div>
+            `;
+        }
+        
+        document.getElementById('meal-plan-content').innerHTML = mealPlanHtml;
+        
+        // Show price note
+        document.getElementById('price-note').style.display = 'block';
+        document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
+    }
+
+    function renderRecipe(r) {
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('output-area').classList.remove('hidden');
+        document.getElementById('error-container').classList.add('hidden');
+        
+        document.getElementById('recipe-name').innerText = r.title;
+        
+        // Render recipe metadata
+        let metaHtml = '';
+        if (r.prep_time) metaHtml += `<div class="meta-item"><i class="fas fa-clock"></i> Prep: ${r.prep_time}</div>`;
+        if (r.cook_time) metaHtml += `<div class="meta-item"><i class="fas fa-utensils"></i> Cook: ${r.cook_time}</div>`;
+        if (r.servings) metaHtml += `<div class="meta-item"><i class="fas fa-users"></i> Serves: ${r.servings}</div>`;
+        if (r.difficulty) metaHtml += `<div class="meta-item"><i class="fas fa-signal"></i> ${r.difficulty}</div>`;
+        if (r.cuisine) metaHtml += `<div class="meta-item"><i class="fas fa-globe"></i> ${r.cuisine}</div>`;
+        
+        document.getElementById('recipe-meta').innerHTML = metaHtml;
+        
+        // Render nutrition badges
+        if (r.nutrition) {
+            document.getElementById('nutrition-data').innerHTML = `
+                <span class="badge"><i class="fas fa-fire"></i> ${r.nutrition.calories || '--'} Cal</span>
+                <span class="badge"><i class="fas fa-dumbbell"></i> ${r.nutrition.protein || '--'}g P</span>
+                <span class="badge"><i class="fas fa-bread-slice"></i> ${r.nutrition.carbs || '--'}g C</span>
+                <span class="badge"><i class="fas fa-oil-can"></i> ${r.nutrition.fat || '--'}g F</span>
+                ${r.nutrition.fiber ? `<span class="badge"><i class="fas fa-leaf"></i> ${r.nutrition.fiber}g Fiber</span>` : ''}
+            `;
+        }
+        
+        // Show price note
+        document.getElementById('price-note').style.display = 'block';
+        document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
+        
+        // Render ingredients
+        let ingredientsHtml = '';
+        if (Array.isArray(r.ingredients)) {
+            ingredientsHtml = '<ul class="ingredient-list">';
+            r.ingredients.forEach(ing => {
+                ingredientsHtml += `
+                    <li>
+                        <span>${ing.name}</span>
+                        ${ing.quantity ? `<span class="ingredient-quantity">${ing.quantity}</span>` : ''}
+                    </li>
+                `;
+            });
+            ingredientsHtml += '</ul>';
+        } else if (typeof r.ingredients === 'string') {
+            ingredientsHtml = `<p>${r.ingredients}</p>`;
+        }
+        
+        // Render instructions
+        let instructionsHtml = '';
+        if (Array.isArray(r.instructions)) {
+            instructionsHtml = '<ol class="instruction-list">';
+            r.instructions.forEach(step => {
+                instructionsHtml += `<li>${step}</li>`;
+            });
+            instructionsHtml += '</ol>';
+        } else if (typeof r.instructions === 'string') {
+            instructionsHtml = `<div style="white-space: pre-line;">${r.instructions}</div>`;
+        }
+        
+        // Render full recipe
+        document.getElementById('recipe-content').innerHTML = `
+            ${r.description ? `<p><em>${r.description}</em></p>` : ''}
+            
+            <h3><i class="fas fa-list-ul"></i> Ingredients:</h3>
+            ${ingredientsHtml}
+            
+            <h3><i class="fas fa-list-ol"></i> Instructions:</h3>
+            ${instructionsHtml}
+            
+            ${r.tips && r.tips.length > 0 ? `
+                <h3><i class="fas fa-lightbulb"></i> Tips:</h3>
+                <ul>
+                    ${r.tips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            ` : ''}
+            
+            ${r.variations && r.variations.length > 0 ? `
+                <h3><i class="fas fa-exchange-alt"></i> Variations:</h3>
+                <ul>
+                    ${r.variations.map(varia => `<li>${varia}</li>`).join('')}
+                </ul>
+            ` : ''}
+            
+            ${r.note ? `<div class="alert alert-info"><i class="fas fa-info-circle"></i> ${r.note}</div>` : ''}
+        `;
+    }
+
+    function renderCostBreakdown(cost) {
+        if (!cost) {
+            document.getElementById('cost-breakdown').classList.add('hidden');
+            return;
+        }
+        
+        document.getElementById('cost-breakdown').classList.remove('hidden');
+        
+        let costHtml = `
+            <div class="cost-item">
+                <span>Total Recipe Cost:</span>
+                <span style="font-weight:600; color: var(--accent);">${cost.total_cost || '₹---'}</span>
+            </div>
+        `;
+        
+        if (cost.ingredient_costs && cost.ingredient_costs.length > 0) {
+            cost.ingredient_costs.forEach(item => {
+                const quantity = item.quantity ? ` (${item.quantity})` : '';
+                costHtml += `
+                    <div class="cost-item">
+                        <span>${item.name}${quantity}:</span>
+                        <span>${item.cost || '₹--'}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        costHtml += `
+            <div class="cost-item cost-total">
+                <span>Cost Per Serving:</span>
+                <span style="color: var(--accent); font-weight: 800;">${cost.per_serving || '₹---'}</span>
+            </div>
+        `;
+        
+        document.getElementById('cost-details').innerHTML = costHtml;
+        
+        if (cost.budget_swap) {
+            document.getElementById('swap-suggestions').classList.remove('hidden');
+            document.getElementById('swap-text').textContent = cost.budget_swap;
+        } else {
+            document.getElementById('swap-suggestions').classList.add('hidden');
+        }
+    }
+
+    async function fetchVideo(q) {
+        // Check if YouTube API key is available
+        if (YT_API_KEY === "%%YOUTUBE_API_KEY%%" || YT_API_KEY.includes('%%')) {
+            console.log("YouTube API key not configured");
+            document.getElementById('video-box').classList.add('hidden');
+            return;
+        }
+
+        // Try multiple search terms for better results
+        const searchTerms = [
+            q,
+            q + " recipe",
+            q + " cooking",
+            q.split(' ').slice(0,3).join(' ') + " recipe"
+        ];
+        
+        let videoFound = false;
+        
+        for (const term of searchTerms) {
+            if (videoFound) break;
+            
+            try {
+                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(term)}&key=${YT_API_KEY}&type=video`;
+                const res = await fetch(url);
+                if (!res.ok) continue;
+                
+                const data = await res.json();
+                if (data.items && data.items[0]) {
+                    const vidId = data.items[0].id.videoId;
+                    document.getElementById('recipe-video').src = `https://www.youtube-nocookie.com/embed/${vidId}?rel=0`;
+                    document.getElementById('video-box').classList.remove('hidden');
+                    videoFound = true;
+                    break;
+                }
+            } catch (e) { 
+                console.log("Video search error for term:", term);
+            }
+        }
+        
+        if (!videoFound) {
+            document.getElementById('video-box').classList.add('hidden');
+            console.log("No video found for:", q);
+        }
+    }
+
+    function copyRecipe() {
+        const recipeName = document.getElementById('recipe-name').innerText;
+        const metaData = document.getElementById('recipe-meta').innerText;
+        const nutritionData = document.getElementById('nutrition-data').innerText;
+        const recipeContent = document.getElementById('recipe-content').innerText;
+        
+        // Get cost breakdown if visible
+        let costData = "";
+        const costBreakdown = document.getElementById('cost-breakdown');
+        if (costBreakdown && !costBreakdown.classList.contains('hidden')) {
+            costData = "\n\n" + costBreakdown.innerText;
+        }
+        
+        // Get cheat hack if visible
+        let cheatData = "";
+        const cheatSection = document.getElementById('cheat-hack-section');
+        if (cheatSection && !cheatSection.classList.contains('hidden')) {
+            cheatData = "\n\n" + cheatSection.innerText;
+        }
+        
+        // Get meal plan if visible
+        let mealPlanData = "";
+        const mealPlanSection = document.getElementById('meal-plan-section');
+        if (mealPlanSection && !mealPlanSection.classList.contains('hidden')) {
+            mealPlanData = "\n\n" + mealPlanSection.innerText;
+        }
+        
+        const fullText = `${recipeName}\n\n${metaData}\n\n${nutritionData}\n\n${recipeContent}${costData}${cheatData}${mealPlanData}\n\nGenerated by FitFuel Pro - AI Nutrition Assistant`;
+        
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(fullText).then(() => {
+                showCopySuccess();
+            }).catch(() => {
+                fallbackCopy(fullText);
+            });
+        } else {
+            fallbackCopy(fullText);
+        }
+    }
+
+    function showCopySuccess() {
+        const copyBtn = document.getElementById('copy-btn');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+        }, 2000);
+    }
+
+    function fallbackCopy(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopySuccess();
+            } else {
+                alert("Please select the text and copy manually (Ctrl+C)");
+            }
+        } catch (err) {
+            console.error('Copy failed:', err);
+            alert("Copy failed. Please select and copy manually.");
+        }
+        
+        document.body.removeChild(textArea);
+    }
+
+    function downloadTXT() {
+        // Get all text content
+        const recipeName = document.getElementById('recipe-name').innerText;
+        const metaData = document.getElementById('recipe-meta').innerText;
+        const nutritionData = document.getElementById('nutrition-data').innerText;
+        const recipeContent = document.getElementById('recipe-content').innerText;
+        
+        // Get cost breakdown if visible
+        let costData = "";
+        const costBreakdown = document.getElementById('cost-breakdown');
+        if (costBreakdown && !costBreakdown.classList.contains('hidden')) {
+            costData = "\n\n" + costBreakdown.innerText;
+        }
+        
+        // Get cheat hack if visible
+        let cheatData = "";
+        const cheatSection = document.getElementById('cheat-hack-section');
+        if (cheatSection && !cheatSection.classList.contains('hidden')) {
+            cheatData = "\n\n" + cheatSection.innerText;
+        }
+        
+        // Get meal plan if visible
+        let mealPlanData = "";
+        const mealPlanSection = document.getElementById('meal-plan-section');
+        if (mealPlanSection && !mealPlanSection.classList.contains('hidden')) {
+            mealPlanData = "\n\n" + mealPlanSection.innerText;
+        }
+        
+        // Get price note
+        let priceNote = "";
+        const priceElement = document.getElementById('price-note');
+        if (priceElement && priceElement.style.display !== 'none') {
+            priceNote = "\n\n" + priceElement.innerText;
+        }
+        
+        // Create plain text content
+        const textContent = `${recipeName}\n${'='.repeat(recipeName.length)}\n\n${metaData}\n\n${nutritionData}\n\n${recipeContent}${costData}${cheatData}${mealPlanData}${priceNote}\n\n---\nGenerated by FitFuel Pro - AI Nutrition Assistant\n${new Date().toLocaleDateString()}`;
+        
+        // Create blob and download
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `FitFuel-Recipe-${Date.now()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        // Show success message
+        const txtBtn = document.getElementById('txt-btn');
+        const originalText = txtBtn.innerHTML;
+        txtBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+        setTimeout(() => {
+            txtBtn.innerHTML = originalText;
+        }, 2000);
+    }
+
+    // Initialize application
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial language
+        changeLanguage('en');
+        
+        // Close about modal when clicking outside
+        document.getElementById('about-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAbout();
+            }
+        });
+        
+        // Add enter key support for inputs
+        document.getElementById('pantryInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') startPantry();
+        });
+        
+        document.getElementById('cheatInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') generateCheatMeal();
+        });
+        
+        document.getElementById('specificInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') generateSpecificRecipe();
+        });
+        
+        // Initialize toggles
+        const cheatMacroToggle = document.getElementById('cheatMacroToggle');
+        if (cheatMacroToggle) {
+            cheatMacroToggle.addEventListener('change', function() {
+                document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
+            });
+        }
+        
+        // Show home screen by default
+        showScreen('screen-home');
+        
+        console.log('FitFuel Pro initialized successfully');
+    });
+</script>
+</body>
+</html>
