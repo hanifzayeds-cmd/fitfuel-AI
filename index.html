@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* All your existing CSS remains exactly the same */
         :root {
             --accent: #00ff88;
             --accent-dark: #00cc6a;
@@ -1615,15 +1616,20 @@
 </div>
 
 <script>
-    let choices = { mode: 'standard', showCostBreakdown: true };
+    // ============================================
+    // ENVIRONMENT VARIABLES - SET THESE DIRECTLY
+    // ============================================
+    // For security in production, you should set these in Vercel environment variables
+    // and access them through a backend API, but for now we'll use them directly
+    const OPENROUTER_KEY = "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";
+    const YT_API_KEY = "AIzaSyB6dd8Qy63f8-an8gaFB30r7MevN9I7LOo";
     
-    // Environment variables - these will be replaced during Vercel deployment
-    const OPENROUTER_KEY = "%%OPENROUTER_API_KEY%%";
-    const YT_API_KEY = "%%YOUTUBE_API_KEY%%";
+    // Rest of your code remains exactly the same...
+    let choices = { mode: 'standard', showCostBreakdown: true };
     
     // Current language
     let currentLang = 'en';
-    let currentGenerationType = null; // Track current generation type to prevent mixing
+    let currentGenerationType = null;
     let loadingInterval;
     let tipInterval;
     
@@ -1840,14 +1846,12 @@
 
     // Clear output area function
     function clearOutputArea() {
-        // Hide all result sections
         document.getElementById('cheat-hack-section').classList.add('hidden');
         document.getElementById('meal-plan-section').classList.add('hidden');
         document.getElementById('cost-breakdown').classList.add('hidden');
         document.getElementById('video-box').classList.add('hidden');
         document.getElementById('price-note').style.display = 'none';
         
-        // Clear content
         document.getElementById('recipe-name').innerHTML = '';
         document.getElementById('recipe-meta').innerHTML = '';
         document.getElementById('nutrition-data').innerHTML = '';
@@ -1858,16 +1862,13 @@
         document.getElementById('cheat-savings').innerHTML = '';
         document.getElementById('meal-plan-content').innerHTML = '';
         
-        // Clear video
         document.getElementById('recipe-video').src = '';
     }
 
-    // Toggle for cheat meal macros
     document.getElementById('cheatMacroToggle')?.addEventListener('change', function() {
         document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
     });
 
-    // Toggle for cost breakdown
     document.getElementById('costToggle')?.addEventListener('change', function() {
         choices.showCostBreakdown = this.checked;
     });
@@ -1883,7 +1884,6 @@
     function showScreen(id) {
         document.querySelectorAll('#app-container > div').forEach(div => div.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        // Reset error container
         document.getElementById('error-container')?.classList.add('hidden');
     }
 
@@ -1914,12 +1914,10 @@
         generateProRecipe();
     }
 
-    // Language change function
     function changeLanguage(lang) {
         currentLang = lang;
         const t = translations[lang];
         
-        // Update all elements with translations
         Object.keys(t).forEach(key => {
             const element = document.getElementById(key);
             if (element) {
@@ -1927,13 +1925,11 @@
             }
         });
         
-        // Update button texts that might have been changed
         document.getElementById('copy-btn').textContent = t.copyBtn;
         document.getElementById('txt-btn').textContent = t.txtBtn;
         document.getElementById('home-btn').textContent = t.homeBtn;
     }
 
-    // About modal functions
     function showAbout() {
         document.getElementById('about-modal').classList.remove('hidden');
     }
@@ -1942,7 +1938,6 @@
         document.getElementById('about-modal').classList.add('hidden');
     }
 
-    // Show attractive loader with progress
     function showLoader(type = 'standard') {
         document.getElementById('loader').classList.remove('hidden');
         document.getElementById('output-area').classList.add('hidden');
@@ -1974,7 +1969,6 @@
             loaderIcon.className = 'fas fa-utensils';
         }
         
-        // Start progress animation
         let progress = 0;
         const progressBar = document.getElementById('loader-progress');
         const percentageText = document.getElementById('loader-percentage');
@@ -1991,11 +1985,9 @@
             percentageText.textContent = Math.round(progress) + '%';
         }, 300);
         
-        // Start tip carousel
         startTipCarousel();
     }
 
-    // Tip carousel
     function startTipCarousel() {
         if (tipInterval) clearInterval(tipInterval);
         
@@ -2013,7 +2005,6 @@
         }, 3000);
     }
 
-    // Show error message
     function showError(title, message) {
         if (loadingInterval) clearInterval(loadingInterval);
         if (tipInterval) clearInterval(tipInterval);
@@ -2026,7 +2017,6 @@
         document.getElementById('error-message').textContent = message;
     }
 
-    // Disable button during processing
     function disableButton(buttonId, disable) {
         const button = document.getElementById(buttonId);
         if (button) {
@@ -2038,21 +2028,18 @@
     }
 
     async function generateProRecipe() {
-        // Check if API keys are available
-        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+        if (!OPENROUTER_KEY || OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%") {
             showError(
                 "API Key Not Configured",
-                "Please set up your OpenRouter API key in Vercel environment variables."
+                "Please set up your OpenRouter API key."
             );
             return;
         }
 
-        // Clear previous content first
         clearOutputArea();
         
         showLoader(choices.mode === 'pantry' ? 'pantry' : 'standard');
         
-        // Strict macro instructions
         let macroInstructions = "";
         if (choices.protein !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.protein}g of protein MUST be in this recipe.`;
         if (choices.cals !== "Not specified") macroInstructions += `\n- MAXIMUM ${choices.cals} calories total.`;
@@ -2064,7 +2051,6 @@
             ? `Create a ${choices.region} ${choices.meal} recipe for ${choices.goal} goal.` 
             : `Create a recipe using ONLY these ingredients: ${choices.ingredients}. You can add salt, oil, and basic spices only. Do not add any other main ingredients.`;
 
-        // Add language instruction for AI
         const languageInstruction = currentLang === 'en' ? 'Generate response in English.' : 
             currentLang === 'hi' ? 'Generate response in Hindi language.' :
             'Generate response in Tamil language.';
@@ -2116,13 +2102,13 @@
                 headers: { 
                     "Authorization": `Bearer ${OPENROUTER_KEY}`, 
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "HTTP-Referer": window.location.origin,
                     "X-Title": "FitFuel Pro"
                 },
                 body: JSON.stringify({
                     "model": "stepfun/step-3.5-flash:free",
                     "messages": [{ "role": "user", "content": prompt }],
-                    "temperature": 0.3 // Lower temperature for more precise following of instructions
+                    "temperature": 0.3
                 })
             });
             
@@ -2136,19 +2122,15 @@
                 throw new Error('Invalid API response');
             }
             
-            // Clean the response to ensure it's valid JSON
             let content = data.choices[0].message.content;
-            // Remove any markdown code blocks if present
             content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
             
             const recipe = JSON.parse(content);
             
-            // Complete progress
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
             
-            // Add slight delay for better UX
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('output-area').classList.remove('hidden');
@@ -2169,18 +2151,15 @@
         }
     }
 
-    // New Specific Recipe Generator
     async function generateSpecificRecipe() {
-        // Check if API keys are available
-        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+        if (!OPENROUTER_KEY || OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%") {
             showError(
                 "API Key Not Configured",
-                "Please set up your OpenRouter API key in Vercel environment variables."
+                "Please set up your OpenRouter API key."
             );
             return;
         }
 
-        // Clear previous content first
         clearOutputArea();
         
         const dishName = document.getElementById('specificInput').value;
@@ -2192,7 +2171,6 @@
         const includeNutrition = document.getElementById('nutritionToggle').checked;
         const includeCost = document.getElementById('costToggleSpecific').checked;
         
-        // Disable button during processing
         disableButton('generateSpecificBtn', true);
         
         showScreen('screen-result');
@@ -2249,7 +2227,7 @@
                 headers: { 
                     "Authorization": `Bearer ${OPENROUTER_KEY}`, 
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "HTTP-Referer": window.location.origin,
                     "X-Title": "FitFuel Pro"
                 },
                 body: JSON.stringify({
@@ -2269,13 +2247,11 @@
                 throw new Error('Invalid API response');
             }
             
-            // Clean the response
             let content = data.choices[0].message.content;
             content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
             
             const recipe = JSON.parse(content);
             
-            // Complete progress
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
@@ -2284,7 +2260,6 @@
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('output-area').classList.remove('hidden');
                 
-                // Hide cheat meal section if visible
                 document.getElementById('cheat-hack-section').classList.add('hidden');
                 document.getElementById('meal-plan-section').classList.add('hidden');
                 
@@ -2310,16 +2285,14 @@
     }
 
     async function generateCheatMeal() {
-        // Check if API keys are available
-        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+        if (!OPENROUTER_KEY || OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%") {
             showError(
                 "API Key Not Configured",
-                "Please set up your OpenRouter API key in Vercel environment variables."
+                "Please set up your OpenRouter API key."
             );
             return;
         }
 
-        // Clear previous content first
         clearOutputArea();
         
         const craving = document.getElementById('cheatInput').value;
@@ -2339,7 +2312,6 @@
             macroPrompt = `Healthy version MUST have: Protein: ${protein}g, Max Calories: ${calories}, Max Carbs: ${carbs}g, Budget: ${budget}.`;
         }
         
-        // Disable button during processing
         disableButton('generateCheatBtn', true);
         
         showScreen('screen-result');
@@ -2408,7 +2380,7 @@
                 headers: { 
                     "Authorization": `Bearer ${OPENROUTER_KEY}`, 
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "HTTP-Referer": window.location.origin,
                     "X-Title": "FitFuel Pro"
                 },
                 body: JSON.stringify({
@@ -2428,13 +2400,11 @@
                 throw new Error('Invalid API response');
             }
             
-            // Clean the response
             let content = data.choices[0].message.content;
             content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
             
             const cheatMeal = JSON.parse(content);
             
-            // Complete progress
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
@@ -2443,7 +2413,6 @@
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('output-area').classList.remove('hidden');
                 
-                // Show cheat meal section
                 document.getElementById('cheat-hack-section').classList.remove('hidden');
                 document.getElementById('meal-plan-section').classList.add('hidden');
                 
@@ -2472,11 +2441,9 @@
                 
                 document.getElementById('cheat-savings').innerHTML = `<strong>${cheatMeal.savings}</strong>`;
                 
-                // Add price accuracy note
                 document.getElementById('price-note').style.display = 'block';
                 document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
                 
-                // Render the actual recipe
                 renderRecipe(cheatMeal.recipe);
                 if (cheatMeal.recipe.cost_breakdown) {
                     renderCostBreakdown(cheatMeal.recipe.cost_breakdown);
@@ -2496,18 +2463,15 @@
         }
     }
 
-    // New Meal Plan Generator
     async function generateMealPlan() {
-        // Check if API keys are available
-        if (OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%" || OPENROUTER_KEY.includes('%%')) {
+        if (!OPENROUTER_KEY || OPENROUTER_KEY === "%%OPENROUTER_API_KEY%%") {
             showError(
                 "API Key Not Configured",
-                "Please set up your OpenRouter API key in Vercel environment variables."
+                "Please set up your OpenRouter API key."
             );
             return;
         }
 
-        // Clear previous content first
         clearOutputArea();
         
         const dietPreference = document.getElementById('dietPreference').value;
@@ -2520,7 +2484,6 @@
             return;
         }
         
-        // Disable button during processing
         disableButton('generateMealPlanBtn', true);
         
         showScreen('screen-result');
@@ -2573,7 +2536,7 @@
                 headers: { 
                     "Authorization": `Bearer ${OPENROUTER_KEY}`, 
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://fitfuel-pro.vercel.app",
+                    "HTTP-Referer": window.location.origin,
                     "X-Title": "FitFuel Pro"
                 },
                 body: JSON.stringify({
@@ -2593,13 +2556,11 @@
                 throw new Error('Invalid API response');
             }
             
-            // Clean the response
             let content = data.choices[0].message.content;
             content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
             
             const mealPlan = JSON.parse(content);
             
-            // Complete progress
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
@@ -2608,7 +2569,6 @@
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('output-area').classList.remove('hidden');
                 
-                // Hide other sections
                 document.getElementById('cheat-hack-section').classList.add('hidden');
                 document.getElementById('meal-plan-section').classList.remove('hidden');
                 
@@ -2656,7 +2616,6 @@
             </div>
         `;
         
-        // Render each day's meals
         for (let day = 1; day <= plan.days; day++) {
             const dayKey = `day_${day}`;
             if (plan.meals[dayKey]) {
@@ -2703,7 +2662,6 @@
             }
         }
         
-        // Add shopping list if available
         if (plan.shopping_list) {
             mealPlanHtml += `
                 <div style="background: rgba(52, 152, 219, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(52, 152, 219, 0.3);">
@@ -2740,7 +2698,6 @@
             mealPlanHtml += `</div>`;
         }
         
-        // Add tips if available
         if (plan.tips && plan.tips.length > 0) {
             mealPlanHtml += `
                 <div class="swap-suggestion">
@@ -2752,7 +2709,6 @@
         
         document.getElementById('meal-plan-content').innerHTML = mealPlanHtml;
         
-        // Show price note
         document.getElementById('price-note').style.display = 'block';
         document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
     }
@@ -2764,7 +2720,6 @@
         
         document.getElementById('recipe-name').innerText = r.title;
         
-        // Render recipe metadata
         let metaHtml = '';
         if (r.prep_time) metaHtml += `<div class="meta-item"><i class="fas fa-clock"></i> Prep: ${r.prep_time}</div>`;
         if (r.cook_time) metaHtml += `<div class="meta-item"><i class="fas fa-utensils"></i> Cook: ${r.cook_time}</div>`;
@@ -2774,7 +2729,6 @@
         
         document.getElementById('recipe-meta').innerHTML = metaHtml;
         
-        // Render nutrition badges
         if (r.nutrition) {
             document.getElementById('nutrition-data').innerHTML = `
                 <span class="badge"><i class="fas fa-fire"></i> ${r.nutrition.calories || '--'} Cal</span>
@@ -2785,11 +2739,9 @@
             `;
         }
         
-        // Show price note
         document.getElementById('price-note').style.display = 'block';
         document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
         
-        // Render ingredients
         let ingredientsHtml = '';
         if (Array.isArray(r.ingredients)) {
             ingredientsHtml = '<ul class="ingredient-list">';
@@ -2806,7 +2758,6 @@
             ingredientsHtml = `<p>${r.ingredients}</p>`;
         }
         
-        // Render instructions
         let instructionsHtml = '';
         if (Array.isArray(r.instructions)) {
             instructionsHtml = '<ol class="instruction-list">';
@@ -2818,7 +2769,6 @@
             instructionsHtml = `<div style="white-space: pre-line;">${r.instructions}</div>`;
         }
         
-        // Render full recipe
         document.getElementById('recipe-content').innerHTML = `
             ${r.description ? `<p><em>${r.description}</em></p>` : ''}
             
@@ -2891,14 +2841,12 @@
     }
 
     async function fetchVideo(q) {
-        // Check if YouTube API key is available
-        if (YT_API_KEY === "%%YOUTUBE_API_KEY%%" || YT_API_KEY.includes('%%')) {
+        if (!YT_API_KEY || YT_API_KEY === "%%YOUTUBE_API_KEY%%") {
             console.log("YouTube API key not configured");
             document.getElementById('video-box').classList.add('hidden');
             return;
         }
 
-        // Try multiple search terms for better results
         const searchTerms = [
             q,
             q + " recipe",
@@ -2941,21 +2889,18 @@
         const nutritionData = document.getElementById('nutrition-data').innerText;
         const recipeContent = document.getElementById('recipe-content').innerText;
         
-        // Get cost breakdown if visible
         let costData = "";
         const costBreakdown = document.getElementById('cost-breakdown');
         if (costBreakdown && !costBreakdown.classList.contains('hidden')) {
             costData = "\n\n" + costBreakdown.innerText;
         }
         
-        // Get cheat hack if visible
         let cheatData = "";
         const cheatSection = document.getElementById('cheat-hack-section');
         if (cheatSection && !cheatSection.classList.contains('hidden')) {
             cheatData = "\n\n" + cheatSection.innerText;
         }
         
-        // Get meal plan if visible
         let mealPlanData = "";
         const mealPlanSection = document.getElementById('meal-plan-section');
         if (mealPlanSection && !mealPlanSection.classList.contains('hidden')) {
@@ -2964,7 +2909,6 @@
         
         const fullText = `${recipeName}\n\n${metaData}\n\n${nutritionData}\n\n${recipeContent}${costData}${cheatData}${mealPlanData}\n\nGenerated by FitFuel Pro - AI Nutrition Assistant`;
         
-        // Try modern clipboard API first
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(fullText).then(() => {
                 showCopySuccess();
@@ -3011,44 +2955,37 @@
     }
 
     function downloadTXT() {
-        // Get all text content
         const recipeName = document.getElementById('recipe-name').innerText;
         const metaData = document.getElementById('recipe-meta').innerText;
         const nutritionData = document.getElementById('nutrition-data').innerText;
         const recipeContent = document.getElementById('recipe-content').innerText;
         
-        // Get cost breakdown if visible
         let costData = "";
         const costBreakdown = document.getElementById('cost-breakdown');
         if (costBreakdown && !costBreakdown.classList.contains('hidden')) {
             costData = "\n\n" + costBreakdown.innerText;
         }
         
-        // Get cheat hack if visible
         let cheatData = "";
         const cheatSection = document.getElementById('cheat-hack-section');
         if (cheatSection && !cheatSection.classList.contains('hidden')) {
             cheatData = "\n\n" + cheatSection.innerText;
         }
         
-        // Get meal plan if visible
         let mealPlanData = "";
         const mealPlanSection = document.getElementById('meal-plan-section');
         if (mealPlanSection && !mealPlanSection.classList.contains('hidden')) {
             mealPlanData = "\n\n" + mealPlanSection.innerText;
         }
         
-        // Get price note
         let priceNote = "";
         const priceElement = document.getElementById('price-note');
         if (priceElement && priceElement.style.display !== 'none') {
             priceNote = "\n\n" + priceElement.innerText;
         }
         
-        // Create plain text content
         const textContent = `${recipeName}\n${'='.repeat(recipeName.length)}\n\n${metaData}\n\n${nutritionData}\n\n${recipeContent}${costData}${cheatData}${mealPlanData}${priceNote}\n\n---\nGenerated by FitFuel Pro - AI Nutrition Assistant\n${new Date().toLocaleDateString()}`;
         
-        // Create blob and download
         const blob = new Blob([textContent], { type: 'text/plain' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -3059,7 +2996,6 @@
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
         
-        // Show success message
         const txtBtn = document.getElementById('txt-btn');
         const originalText = txtBtn.innerHTML;
         txtBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
@@ -3068,19 +3004,15 @@
         }, 2000);
     }
 
-    // Initialize application
     document.addEventListener('DOMContentLoaded', function() {
-        // Set initial language
         changeLanguage('en');
         
-        // Close about modal when clicking outside
         document.getElementById('about-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 hideAbout();
             }
         });
         
-        // Add enter key support for inputs
         document.getElementById('pantryInput')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') startPantry();
         });
@@ -3093,7 +3025,6 @@
             if (e.key === 'Enter') generateSpecificRecipe();
         });
         
-        // Initialize toggles
         const cheatMacroToggle = document.getElementById('cheatMacroToggle');
         if (cheatMacroToggle) {
             cheatMacroToggle.addEventListener('change', function() {
@@ -3101,7 +3032,6 @@
             });
         }
         
-        // Show home screen by default
         showScreen('screen-home');
         
         console.log('FitFuel Pro initialized successfully');
