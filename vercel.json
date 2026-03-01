@@ -1,10 +1,4 @@
 {
-  "build": {
-    "env": {
-      "OPENROUTER_API_KEY": "@openrouter-api-key",
-      "YOUTUBE_API_KEY": "@youtube-api-key"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
