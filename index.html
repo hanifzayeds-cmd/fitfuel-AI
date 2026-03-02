@@ -1609,18 +1609,8 @@
 </div>
 
 <script>
-    // Configuration - These will be replaced by Vercel environment variables
-    const CONFIG = {
-        OPENROUTER_KEY: '%%OPENROUTER_API_KEY%%',
-        YOUTUBE_API_KEY: '%%YOUTUBE_API_KEY%%'
-    };
-
-    // Check if running in production (Vercel) and use environment variables
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        // In production, these will be replaced by Vercel during build
-        CONFIG.OPENROUTER_KEY = '%%OPENROUTER_API_KEY%%';
-        CONFIG.YOUTUBE_API_KEY = '%%YOUTUBE_API_KEY%%';
-    }
+    // YouTube API Key (can stay client-side)
+    const YOUTUBE_API_KEY = "AIzaSyB6dd8Qy63f8-an8gaFB30r7MevN9I7LOo";
 
     let choices = { mode: 'standard', showCostBreakdown: true };
     
@@ -1630,7 +1620,7 @@
     let loadingInterval;
     let tipInterval;
     
-    // Language translations (same as before)
+    // Language translations
     const translations = {
         en: {
             tagline: "AI-Powered Nutrition & Smart Meal Planning",
@@ -1862,40 +1852,6 @@
         document.getElementById('recipe-video').src = '';
     }
 
-    // Initialize environment variables
-    function initializeConfig() {
-        // In production, these will be replaced by Vercel
-        // In development, you can set them in vercel.json or .env
-        const openrouterKey = CONFIG.OPENROUTER_KEY;
-        const youtubeKey = CONFIG.YOUTUBE_API_KEY;
-        
-        // Check if keys are properly set
-        if (openrouterKey.includes('%%') || openrouterKey === 'YOUR_OPENROUTER_API_KEY') {
-            console.warn('OpenRouter API key not properly configured. Please set OPENROUTER_API_KEY in Vercel environment variables.');
-            showApiKeyWarning();
-        }
-        
-        if (youtubeKey.includes('%%') || youtubeKey === 'YOUR_YOUTUBE_API_KEY') {
-            console.warn('YouTube API key not properly configured. Please set YOUTUBE_API_KEY in Vercel environment variables.');
-        }
-        
-        return {
-            openrouter: openrouterKey,
-            youtube: youtubeKey
-        };
-    }
-
-    function showApiKeyWarning() {
-        const warningDiv = document.createElement('div');
-        warningDiv.className = 'alert alert-warning';
-        warningDiv.innerHTML = `
-            <i class="fas fa-exclamation-triangle"></i>
-            <strong>Configuration Notice:</strong> API keys need to be set in Vercel environment variables. 
-            Please check your deployment settings.
-        `;
-        document.getElementById('app-container').insertBefore(warningDiv, document.getElementById('app-container').firstChild);
-    }
-
     // Toggle for cheat meal macros
     document.getElementById('cheatMacroToggle')?.addEventListener('change', function() {
         document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
@@ -2067,16 +2023,6 @@
     }
 
     async function generateProRecipe() {
-        const config = initializeConfig();
-        
-        if (config.openrouter.includes('%%') || config.openrouter === 'YOUR_OPENROUTER_API_KEY') {
-            showError(
-                "Configuration Error",
-                "OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in Vercel environment variables."
-            );
-            return;
-        }
-        
         clearOutputArea();
         showLoader(choices.mode === 'pantry' ? 'pantry' : 'standard');
         
@@ -2137,23 +2083,19 @@
         }`;
 
         try {
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: { 
-                    "Authorization": `Bearer ${config.openrouter}`, 
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin,
-                    "X-Title": "FitFuel Pro"
-                },
+            const res = await fetch('/api/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    "model": "stepfun/step-3.5-flash:free",
-                    "messages": [{ "role": "user", "content": prompt }],
-                    "temperature": 0.3
+                    prompt: prompt,
+                    model: "stepfun/step-3.5-flash:free",
+                    temperature: 0.3
                 })
             });
             
             if (!res.ok) {
-                throw new Error(`API error: ${res.status} ${res.statusText}`);
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(`API error: ${res.status} - ${errorData.error || res.statusText}`);
             }
             
             const data = await res.json();
@@ -2178,7 +2120,7 @@
                 if (choices.showCostBreakdown && recipe.cost_breakdown) {
                     renderCostBreakdown(recipe.cost_breakdown);
                 }
-                fetchVideo(recipe.title + " recipe", config.youtube);
+                fetchVideo(recipe.title + " recipe");
                 if (tipInterval) clearInterval(tipInterval);
             }, 500);
             
@@ -2186,22 +2128,12 @@
             console.error('Error:', e);
             showError(
                 "Oops! Something went wrong",
-                "We encountered an issue while generating your recipe. Please check your connection and try again."
+                e.message || "We encountered an issue while generating your recipe. Please check your connection and try again."
             );
         }
     }
 
     async function generateSpecificRecipe() {
-        const config = initializeConfig();
-        
-        if (config.openrouter.includes('%%') || config.openrouter === 'YOUR_OPENROUTER_API_KEY') {
-            showError(
-                "Configuration Error",
-                "OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in Vercel environment variables."
-            );
-            return;
-        }
-        
         clearOutputArea();
         
         const dishName = document.getElementById('specificInput').value;
@@ -2264,23 +2196,19 @@
         }`;
         
         try {
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: { 
-                    "Authorization": `Bearer ${config.openrouter}`, 
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin,
-                    "X-Title": "FitFuel Pro"
-                },
+            const res = await fetch('/api/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    "model": "stepfun/step-3.5-flash:free",
-                    "messages": [{ "role": "user", "content": prompt }],
-                    "temperature": 0.5
+                    prompt: prompt,
+                    model: "stepfun/step-3.5-flash:free",
+                    temperature: 0.5
                 })
             });
             
             if (!res.ok) {
-                throw new Error(`API error: ${res.status} ${res.statusText}`);
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(`API error: ${res.status} - ${errorData.error || res.statusText}`);
             }
             
             const data = await res.json();
@@ -2311,7 +2239,7 @@
                 } else {
                     document.getElementById('cost-breakdown').classList.add('hidden');
                 }
-                fetchVideo(recipe.title + " recipe tutorial", config.youtube);
+                fetchVideo(recipe.title + " recipe tutorial");
                 if (tipInterval) clearInterval(tipInterval);
             }, 500);
             
@@ -2319,7 +2247,7 @@
             console.error('Error:', e);
             showError(
                 "Recipe Generation Failed",
-                `Failed to generate recipe for "${dishName}". Please try again with a different dish name.`
+                e.message || `Failed to generate recipe for "${dishName}". Please try again with a different dish name.`
             );
         } finally {
             disableButton('generateSpecificBtn', false);
@@ -2327,16 +2255,6 @@
     }
 
     async function generateCheatMeal() {
-        const config = initializeConfig();
-        
-        if (config.openrouter.includes('%%') || config.openrouter === 'YOUR_OPENROUTER_API_KEY') {
-            showError(
-                "Configuration Error",
-                "OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in Vercel environment variables."
-            );
-            return;
-        }
-        
         clearOutputArea();
         
         const craving = document.getElementById('cheatInput').value;
@@ -2419,23 +2337,19 @@
         }`;
         
         try {
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: { 
-                    "Authorization": `Bearer ${config.openrouter}`, 
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin,
-                    "X-Title": "FitFuel Pro"
-                },
+            const res = await fetch('/api/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    "model": "stepfun/step-3.5-flash:free",
-                    "messages": [{ "role": "user", "content": prompt }],
-                    "temperature": 0.5
+                    prompt: prompt,
+                    model: "stepfun/step-3.5-flash:free",
+                    temperature: 0.5
                 })
             });
             
             if (!res.ok) {
-                throw new Error(`API error: ${res.status} ${res.statusText}`);
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(`API error: ${res.status} - ${errorData.error || res.statusText}`);
             }
             
             const data = await res.json();
@@ -2500,7 +2414,7 @@
             console.error('Error:', e);
             showError(
                 "Conversion Failed",
-                `Failed to convert "${craving}" into a healthy version. Please try again with a different description.`
+                e.message || `Failed to convert "${craving}" into a healthy version. Please try again with a different description.`
             );
         } finally {
             disableButton('generateCheatBtn', false);
@@ -2508,16 +2422,6 @@
     }
 
     async function generateMealPlan() {
-        const config = initializeConfig();
-        
-        if (config.openrouter.includes('%%') || config.openrouter === 'YOUR_OPENROUTER_API_KEY') {
-            showError(
-                "Configuration Error",
-                "OpenRouter API key is not configured. Please set OPENROUTER_API_KEY in Vercel environment variables."
-            );
-            return;
-        }
-        
         clearOutputArea();
         
         const dietPreference = document.getElementById('dietPreference').value;
@@ -2577,23 +2481,19 @@
         }`;
         
         try {
-            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: { 
-                    "Authorization": `Bearer ${config.openrouter}`, 
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.origin,
-                    "X-Title": "FitFuel Pro"
-                },
+            const res = await fetch('/api/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    "model": "stepfun/step-3.5-flash:free",
-                    "messages": [{ "role": "user", "content": prompt }],
-                    "temperature": 0.5
+                    prompt: prompt,
+                    model: "stepfun/step-3.5-flash:free",
+                    temperature: 0.5
                 })
             });
             
             if (!res.ok) {
-                throw new Error(`API error: ${res.status} ${res.statusText}`);
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(`API error: ${res.status} - ${errorData.error || res.statusText}`);
             }
             
             const data = await res.json();
@@ -2627,7 +2527,7 @@
             console.error('Error:', e);
             showError(
                 "Meal Plan Generation Failed",
-                "Failed to generate meal plan. Please try again with different preferences."
+                e.message || "Failed to generate meal plan. Please try again with different preferences."
             );
         } finally {
             disableButton('generateMealPlanBtn', false);
@@ -2886,13 +2786,7 @@
         }
     }
 
-    async function fetchVideo(q, youtubeKey) {
-        if (youtubeKey.includes('%%') || youtubeKey === 'YOUR_YOUTUBE_API_KEY') {
-            console.log('YouTube API key not configured, skipping video search');
-            document.getElementById('video-box').classList.add('hidden');
-            return;
-        }
-        
+    async function fetchVideo(q) {
         const searchTerms = [
             q,
             q + " recipe",
@@ -2906,7 +2800,7 @@
             if (videoFound) break;
             
             try {
-                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(term)}&key=${youtubeKey}&type=video`;
+                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(term)}&key=${YOUTUBE_API_KEY}&type=video`;
                 const res = await fetch(url);
                 if (!res.ok) continue;
                 
@@ -3080,9 +2974,6 @@
         }
         
         showScreen('screen-home');
-        
-        // Initialize config check
-        initializeConfig();
         
         console.log('FitFuel Pro initialized successfully');
     });
