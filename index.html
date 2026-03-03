@@ -1148,6 +1148,64 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+
+        .language-selector-home {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .lang-home-btn {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid transparent;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .lang-home-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            background: rgba(0,255,136,0.1);
+        }
+
+        .lang-home-btn.active-lang {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(113,88,226,0.2));
+            color: var(--accent);
+        }
+
+        .day-macro-settings {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 10px;
+            background: rgba(0,255,136,0.05);
+            border-radius: 10px;
+        }
+
+        .day-header h4 {
+            margin: 0;
+            color: var(--accent);
+        }
+
+        .day-content {
+            padding: 15px 0;
+        }
     </style>
 </head>
 <body>
@@ -1169,6 +1227,19 @@
     <div id="screen-home">
         <h1>FitFuel<span style="color:var(--accent)"> Pro</span></h1>
         <p class="tagline" id="tagline">AI-Powered Nutrition & Smart Meal Planning</p>
+        
+        <!-- Attractive Language Settings in Home -->
+        <div class="language-selector-home">
+            <button class="lang-home-btn active-lang" onclick="changeLanguageHome('en')">
+                <i class="fas fa-language"></i> English 🇺🇸
+            </button>
+            <button class="lang-home-btn" onclick="changeLanguageHome('hi')">
+                <i class="fas fa-language"></i> हिंदी 🇮🇳
+            </button>
+            <button class="lang-home-btn" onclick="changeLanguageHome('ta')">
+                <i class="fas fa-language"></i> தமிழ் 🇮🇳
+            </button>
+        </div>
         
         <div class="grid-options-3">
             <div class="feature-card" onclick="showScreen('screen-cheat')">
@@ -1310,6 +1381,26 @@
         
         <input type="text" id="specificInput" placeholder="Enter dish name (e.g. 'Biryani', 'Pizza', 'Chocolate Brownies')">
         
+        <!-- Added Macros Target for Specific Recipe -->
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-bullseye"></i> <span id="specific-include-macros">Include Macros Target</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="specificMacroToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div id="specificMacroSettings" class="hidden">
+            <div class="macro-grid">
+                <input type="text" id="specificProtein" placeholder="Protein target (g)">
+                <input type="text" id="specificCalories" placeholder="Max Calories">
+                <input type="text" id="specificCarbs" placeholder="Max Carbs (g)">
+                <input type="text" id="specificBudget" placeholder="Budget (₹/$)">
+            </div>
+        </div>
+        
         <div class="toggle-container">
             <div class="toggle-label">
                 <i class="fas fa-chart-line"></i> <span id="include-nutrition">Include Nutrition Facts</span>
@@ -1403,6 +1494,9 @@
         
         <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3">
         
+        <!-- Day-wise Macro Settings -->
+        <div id="dayMacroSettings"></div>
+        
         <div class="toggle-container">
             <div class="toggle-label">
                 <i class="fas fa-rupee-sign"></i> <span id="include-shopping">Include Shopping List</span>
@@ -1444,18 +1538,18 @@
         </div>
     </div>
 
-    <!-- Goal Selection -->
+    <!-- Goal Selection - Modified to skip for pantry mode -->
     <div id="screen-goal" class="hidden">
         <h2><i class="fas fa-bullseye"></i> <span id="fitness-goal">Fitness Goal</span></h2>
         <div class="grid-options">
-            <button onclick="save('goal', 'Fat Loss', 'screen-pro-limits')"><i class="fas fa-fire"></i> 🔥 <span id="fat-loss">Fat Loss</span></button>
-            <button onclick="save('goal', 'Muscle Building', 'screen-pro-limits')"><i class="fas fa-dumbbell"></i> 💪 <span id="muscle-gain">Muscle Gain</span></button>
-            <button onclick="save('goal', 'Maintenance', 'screen-pro-limits')"><i class="fas fa-balance-scale"></i> ⚖️ <span id="maintenance">Maintenance</span></button>
-            <button onclick="save('goal', 'Endurance', 'screen-pro-limits')"><i class="fas fa-running"></i> 🏃 <span id="endurance">Endurance</span></button>
+            <button onclick="save('goal', 'Fat Loss', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-fire"></i> 🔥 <span id="fat-loss">Fat Loss</span></button>
+            <button onclick="save('goal', 'Muscle Building', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-dumbbell"></i> 💪 <span id="muscle-gain">Muscle Gain</span></button>
+            <button onclick="save('goal', 'Maintenance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-balance-scale"></i> ⚖️ <span id="maintenance">Maintenance</span></button>
+            <button onclick="save('goal', 'Endurance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-running"></i> 🏃 <span id="endurance">Endurance</span></button>
         </div>
     </div>
 
-    <!-- Macro Targets -->
+    <!-- Macro Targets for Standard Mode -->
     <div id="screen-pro-limits" class="hidden">
         <h2><i class="fas fa-chart-line"></i> <span id="macro-targets">Macro Targets</span></h2>
         <p id="macro-desc">Enter your targets - AI will strictly follow these numbers!</p>
@@ -1480,6 +1574,26 @@
         
         <button class="btn-primary" onclick="finalizePro()">
             <i class="fas fa-brain"></i> <span id="generate-plan">Generate Pro Plan</span>
+        </button>
+    </div>
+
+    <!-- Macro Targets for Pantry Mode (Simplified - No Goal/Macros) -->
+    <div id="screen-pro-limits-pantry" class="hidden">
+        <h2><i class="fas fa-egg"></i> <span id="pantry-macro-title">Pantry Recipe Generator</span></h2>
+        <p id="pantry-macro-desc">We'll create a delicious recipe using your ingredients!</p>
+        
+        <div class="toggle-container">
+            <div class="toggle-label">
+                <i class="fas fa-shopping-cart"></i> <span id="show-cost-pantry">Show Cost Breakdown</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="costTogglePantry" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button class="btn-primary" onclick="finalizePantry()">
+            <i class="fas fa-magic"></i> <span id="generate-pantry-plan">Generate Pantry Recipe</span>
         </button>
     </div>
 
@@ -1644,6 +1758,7 @@
             specificScreenTitle: "Specific Recipe Generator",
             specificScreenDesc: "Enter the name of any dish you want to make, and we'll give you a complete recipe with nutrition facts!",
             specificInfo: "Examples: 'Chicken Biryani', 'Vegetable Lasagna', 'Butter Chicken', 'Chocolate Cake', 'Paneer Tikka'",
+            specificIncludeMacros: "Include Macros Target",
             includeNutrition: "Include Nutrition Facts",
             includeCost: "Include Cost Analysis",
             generateRecipe: "Generate Complete Recipe",
@@ -1689,7 +1804,11 @@
             cheatLoader: "Transforming your cheat meal into a healthy version...",
             pantryLoader: "Creating recipes from your pantry items...",
             specificLoader: "Generating your specific recipe...",
-            mealPlanLoader: "Creating your personalized meal plan..."
+            mealPlanLoader: "Creating your personalized meal plan...",
+            pantryMacroTitle: "Pantry Recipe Generator",
+            pantryMacroDesc: "We'll create a delicious recipe using your ingredients!",
+            showCostPantry: "Show Cost Breakdown",
+            generatePantryPlan: "Generate Pantry Recipe"
         },
         hi: {
             tagline: "AI-संचालित पोषण और स्मार्ट भोजन योजना",
@@ -1713,6 +1832,7 @@
             specificScreenTitle: "विशिष्ट रेसिपी जेनरेटर",
             specificScreenDesc: "किसी भी डिश का नाम दर्ज करें जिसे आप बनाना चाहते हैं, और हम आपको पोषण तथ्यों के साथ एक पूरी रेसिपी देंगे!",
             specificInfo: "उदाहरण: 'चिकन बिरयानी', 'वेजिटेबल लसग्ना', 'बटर चिकन', 'चॉकलेट केक', 'पनीर टिक्का'",
+            specificIncludeMacros: "मैक्रोस टारगेट शामिल करें",
             includeNutrition: "पोषण तथ्य शामिल करें",
             includeCost: "लागत विश्लेषण शामिल करें",
             generateRecipe: "पूरी रेसिपी जेनरेट करें",
@@ -1758,7 +1878,11 @@
             cheatLoader: "आपके चीट मील को हेल्दी वर्जन में बदल रहा है...",
             pantryLoader: "आपकी पेंट्री वस्तुओं से रेसिपी बना रहा है...",
             specificLoader: "आपकी विशिष्ट रेसिपी जेनरेट कर रहा है...",
-            mealPlanLoader: "आपकी व्यक्तिगत भोजन योजना बना रहा है..."
+            mealPlanLoader: "आपकी व्यक्तिगत भोजन योजना बना रहा है...",
+            pantryMacroTitle: "पेंट्री रेसिपी जेनरेटर",
+            pantryMacroDesc: "हम आपकी सामग्री का उपयोग करके एक स्वादिष्ट रेसिपी बनाएंगे!",
+            showCostPantry: "लागत विश्लेषण दिखाएं",
+            generatePantryPlan: "पेंट्री रेसिपी जेनरेट करें"
         },
         ta: {
             tagline: "AI-இயக்கப்பட்ட ஊட்டச்சத்து மற்றும் ஸ்மார்ட் உணவு திட்டமிடல்",
@@ -1782,6 +1906,7 @@
             specificScreenTitle: "குறிப்பிட்ட செய்முறை ஜெனரேட்டர்",
             specificScreenDesc: "நீங்கள் தயாரிக்க விரும்பும் எந்த டிஷின் பெயரையும் உள்ளிடவும், மேலும் ஊட்டச்சத்து உண்மைகளுடன் ஒரு முழுமையான செய்முறையை நாங்கள் உங்களுக்கு வழங்குவோம்!",
             specificInfo: "எடுத்துக்காட்டுகள்: 'சிக்கன் பிரியாணி', 'காய்கறி லசாக்னா', 'வெண்ணை கோழி', 'சாக்லேட் கேக்', 'பன்னீர் டிக்கா'",
+            specificIncludeMacros: "மேக்ரோஸ் இலக்கை சேர்க்கவும்",
             includeNutrition: "ஊட்டச்சத்து உண்மைகளை சேர்க்கவும்",
             includeCost: "செலவு பகுப்பாய்வை சேர்க்கவும்",
             generateRecipe: "முழுமையான செய்முறையை உருவாக்கவும்",
@@ -1827,7 +1952,11 @@
             cheatLoader: "உங்கள் ஏமாற்றும் உணவை ஆரோக்கியமான பதிப்பாக மாற்றுகிறது...",
             pantryLoader: "உங்கள் களஞ்சிய பொருட்களிலிருந்து செய்முறைகளை உருவாக்குகிறது...",
             specificLoader: "உங்கள் குறிப்பிட்ட செய்முறையை உருவாக்குகிறது...",
-            mealPlanLoader: "உங்கள் தனிப்பயனாக்கப்பட்ட உணவு திட்டத்தை உருவாக்குகிறது..."
+            mealPlanLoader: "உங்கள் தனிப்பயனாக்கப்பட்ட உணவு திட்டத்தை உருவாக்குகிறது...",
+            pantryMacroTitle: "களஞ்சிய செய்முறை ஜெனரேட்டர்",
+            pantryMacroDesc: "உங்கள் பொருட்களைப் பயன்படுத்தி ஒரு சுவையான செய்முறையை உருவாக்குவோம்!",
+            showCostPantry: "செலவு பிரித்தளிப்பை காட்டு",
+            generatePantryPlan: "களஞ்சிய செய்முறையை உருவாக்கு"
         }
     };
 
@@ -1857,8 +1986,17 @@
         document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
     });
 
+    // Toggle for specific recipe macros
+    document.getElementById('specificMacroToggle')?.addEventListener('change', function() {
+        document.getElementById('specificMacroSettings').classList.toggle('hidden', !this.checked);
+    });
+
     // Toggle for cost breakdown
     document.getElementById('costToggle')?.addEventListener('change', function() {
+        choices.showCostBreakdown = this.checked;
+    });
+
+    document.getElementById('costTogglePantry')?.addEventListener('change', function() {
         choices.showCostBreakdown = this.checked;
     });
 
@@ -1874,6 +2012,49 @@
         document.querySelectorAll('#app-container > div').forEach(div => div.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('error-container')?.classList.add('hidden');
+        
+        // Generate day macro settings when AI Meal Plan screen is shown
+        if (id === 'screen-ai-meal') {
+            generateDayMacroSettings();
+        }
+    }
+
+    function generateDayMacroSettings() {
+        const days = parseInt(document.getElementById('mealPlanDays').value) || 3;
+        const container = document.getElementById('dayMacroSettings');
+        let html = '<h3>Set Daily Targets (Optional)</h3>';
+        
+        for (let i = 1; i <= days; i++) {
+            html += `
+                <div class="day-macro-settings">
+                    <div class="day-header" onclick="toggleDay(${i})">
+                        <h4><i class="fas fa-calendar-day"></i> Day ${i}</h4>
+                        <i class="fas fa-chevron-down" id="chevron-${i}"></i>
+                    </div>
+                    <div class="day-content" id="day-${i}-content">
+                        <div class="macro-grid">
+                            <input type="text" id="day-${i}-cal" placeholder="Max Calories (e.g. 2000)">
+                            <input type="text" id="day-${i}-protein" placeholder="Protein (g)">
+                            <input type="text" id="day-${i}-carbs" placeholder="Carbs (g)">
+                            <input type="text" id="day-${i}-budget" placeholder="Budget (₹)">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleDay(day) {
+        const content = document.getElementById(`day-${day}-content`);
+        const chevron = document.getElementById(`chevron-${day}`);
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            chevron.className = 'fas fa-chevron-up';
+        } else {
+            content.style.display = 'none';
+            chevron.className = 'fas fa-chevron-down';
+        }
     }
 
     function save(key, val, next) {
@@ -1888,7 +2069,8 @@
             return;
         }
         choices.ingredients = input;
-        showScreen('screen-goal');
+        // Skip goal selection for pantry mode, go directly to pantry macro screen
+        showScreen('screen-pro-limits-pantry');
     }
 
     function finalizePro() {
@@ -1903,11 +2085,19 @@
         generateProRecipe();
     }
 
+    function finalizePantry() {
+        choices.showCostBreakdown = document.getElementById('costTogglePantry').checked;
+        showScreen('screen-result');
+        currentGenerationType = 'pantry';
+        generateProRecipe();
+    }
+
     // Language change function
     function changeLanguage(lang) {
         currentLang = lang;
         const t = translations[lang];
         
+        // Update all elements with IDs that match translation keys
         Object.keys(t).forEach(key => {
             const element = document.getElementById(key);
             if (element) {
@@ -1915,9 +2105,31 @@
             }
         });
         
+        // Update buttons that might have different IDs
         document.getElementById('copy-btn').textContent = t.copyBtn;
         document.getElementById('txt-btn').textContent = t.txtBtn;
         document.getElementById('home-btn').textContent = t.homeBtn;
+        
+        // Update home language buttons
+        updateHomeLanguageButtons(lang);
+    }
+
+    function changeLanguageHome(lang) {
+        changeLanguage(lang);
+        document.getElementById('langSelector').value = lang;
+        
+        // Update active class on home language buttons
+        updateHomeLanguageButtons(lang);
+    }
+
+    function updateHomeLanguageButtons(lang) {
+        const buttons = document.querySelectorAll('.lang-home-btn');
+        buttons.forEach(btn => {
+            btn.classList.remove('active-lang');
+            if (btn.textContent.includes(lang === 'en' ? 'English' : lang === 'hi' ? 'हिंदी' : 'தமிழ்')) {
+                btn.classList.add('active-lang');
+            }
+        });
     }
 
     // About modal functions
@@ -2027,11 +2239,14 @@
         showLoader(choices.mode === 'pantry' ? 'pantry' : 'standard');
         
         let macroInstructions = "";
-        if (choices.protein !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.protein}g of protein MUST be in this recipe.`;
-        if (choices.cals !== "Not specified") macroInstructions += `\n- MAXIMUM ${choices.cals} calories total.`;
-        if (choices.carbs !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.carbs}g of carbohydrates.`;
-        if (choices.fiber !== "Not specified") macroInstructions += `\n- AT LEAST ${choices.fiber}g of fiber.`;
-        if (choices.budget !== "Not specified") macroInstructions += `\n- Total cost MUST be under ${choices.budget}.`;
+        
+        if (choices.mode === 'standard') {
+            if (choices.protein !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.protein}g of protein MUST be in this recipe.`;
+            if (choices.cals !== "Not specified") macroInstructions += `\n- MAXIMUM ${choices.cals} calories total.`;
+            if (choices.carbs !== "Not specified") macroInstructions += `\n- EXACTLY ${choices.carbs}g of carbohydrates.`;
+            if (choices.fiber !== "Not specified") macroInstructions += `\n- AT LEAST ${choices.fiber}g of fiber.`;
+            if (choices.budget !== "Not specified") macroInstructions += `\n- Total cost MUST be under ${choices.budget}.`;
+        }
 
         const base = choices.mode === 'standard' 
             ? `Create a ${choices.region} ${choices.meal} recipe for ${choices.goal} goal.` 
@@ -2144,6 +2359,16 @@
         
         const includeNutrition = document.getElementById('nutritionToggle').checked;
         const includeCost = document.getElementById('costToggleSpecific').checked;
+        const includeMacros = document.getElementById('specificMacroToggle').checked;
+        
+        let macroPrompt = "";
+        if (includeMacros) {
+            const protein = document.getElementById('specificProtein').value || "Not specified";
+            const calories = document.getElementById('specificCalories').value || "Not specified";
+            const carbs = document.getElementById('specificCarbs').value || "Not specified";
+            const budget = document.getElementById('specificBudget').value || "Not specified";
+            macroPrompt = `\n- Protein target: ${protein}g\n- Max Calories: ${calories}\n- Max Carbs: ${carbs}g\n- Budget: ${budget}`;
+        }
         
         disableButton('generateSpecificBtn', true);
         
@@ -2158,6 +2383,7 @@
         const prompt = `Create a detailed recipe for: ${dishName}
         ${includeNutrition ? 'Include detailed nutrition facts.' : ''}
         ${includeCost ? 'Include cost breakdown with realistic market prices.' : ''}
+        ${macroPrompt ? `STRICT REQUIREMENTS - MUST FOLLOW EXACTLY: ${macroPrompt}` : ''}
         ${languageInstruction}
         
         Use realistic measurements and cooking instructions.
@@ -2407,6 +2633,9 @@
                     renderCostBreakdown(cheatMeal.recipe.cost_breakdown);
                 }
                 
+                // Fetch video for cheat meal recipe
+                fetchVideo(cheatMeal.recipe.title + " recipe tutorial");
+                
                 if (tipInterval) clearInterval(tipInterval);
             }, 500);
             
@@ -2426,12 +2655,23 @@
         
         const dietPreference = document.getElementById('dietPreference').value;
         const mealPlanType = document.getElementById('mealPlanType').value;
-        const days = document.getElementById('mealPlanDays').value;
+        const days = parseInt(document.getElementById('mealPlanDays').value);
         const includeShopping = document.getElementById('shoppingToggle').checked;
         
         if (!dietPreference || !mealPlanType || !days) {
             alert("Please fill in all fields!");
             return;
+        }
+        
+        // Collect day-wise macro targets
+        let dayMacros = [];
+        for (let i = 1; i <= days; i++) {
+            dayMacros.push({
+                calories: document.getElementById(`day-${i}-cal`)?.value || "Not specified",
+                protein: document.getElementById(`day-${i}-protein`)?.value || "Not specified",
+                carbs: document.getElementById(`day-${i}-carbs`)?.value || "Not specified",
+                budget: document.getElementById(`day-${i}-budget`)?.value || "Not specified"
+            });
         }
         
         disableButton('generateMealPlanBtn', true);
@@ -2444,7 +2684,20 @@
             currentLang === 'hi' ? 'Generate response in Hindi language.' :
             'Generate response in Tamil language.';
         
+        let dayMacroPrompt = "";
+        dayMacros.forEach((macro, index) => {
+            if (macro.calories !== "Not specified" || macro.protein !== "Not specified" || macro.carbs !== "Not specified" || macro.budget !== "Not specified") {
+                dayMacroPrompt += `\nDay ${index + 1} requirements:`;
+                if (macro.calories !== "Not specified") dayMacroPrompt += ` Max ${macro.calories} calories`;
+                if (macro.protein !== "Not specified") dayMacroPrompt += `, ${macro.protein}g protein`;
+                if (macro.carbs !== "Not specified") dayMacroPrompt += `, ${macro.carbs}g carbs`;
+                if (macro.budget !== "Not specified") dayMacroPrompt += `, Budget ₹${macro.budget}`;
+                dayMacroPrompt += ".";
+            }
+        });
+        
         const prompt = `Create a ${days}-day ${dietPreference} meal plan for ${mealPlanType}.
+        ${dayMacroPrompt}
         ${includeShopping ? 'Include a detailed shopping list.' : ''}
         ${languageInstruction}
         
@@ -2455,18 +2708,13 @@
             "total_estimated_cost": "₹XXX",
             "average_calories_per_day": "XXXX-XXXX",
             "meals": {
-                "day_1": {
+                ${Array.from({length: days}, (_, i) => `
+                "day_${i+1}": {
                     "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
                     "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
                     "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
                     "snacks": ["Snack 1", "Snack 2"]
-                },
-                "day_2": {
-                    "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
-                    "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
-                    "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
-                    "snacks": ["Snack 1", "Snack 2"]
-                }
+                }`).join(',')}
             },
             ${includeShopping ? `"shopping_list": {
                 "vegetables": ["item - quantity"],
@@ -2657,6 +2905,15 @@
         
         document.getElementById('price-note').style.display = 'block';
         document.getElementById('price-note-text').textContent = translations[currentLang].priceNote;
+        
+        // Fetch videos for each day's meals
+        for (let day = 1; day <= plan.days; day++) {
+            const dayKey = `day_${day}`;
+            if (plan.meals[dayKey]) {
+                fetchVideo(plan.meals[dayKey].breakfast.name + " recipe");
+                break; // Just fetch one video for now to keep it simple
+            }
+        }
     }
 
     function renderRecipe(r) {
@@ -2966,10 +3223,21 @@
             if (e.key === 'Enter') generateSpecificRecipe();
         });
         
+        document.getElementById('mealPlanDays')?.addEventListener('change', function() {
+            generateDayMacroSettings();
+        });
+        
         const cheatMacroToggle = document.getElementById('cheatMacroToggle');
         if (cheatMacroToggle) {
             cheatMacroToggle.addEventListener('change', function() {
                 document.getElementById('cheatMacroSettings').classList.toggle('hidden', !this.checked);
+            });
+        }
+        
+        const specificMacroToggle = document.getElementById('specificMacroToggle');
+        if (specificMacroToggle) {
+            specificMacroToggle.addEventListener('change', function() {
+                document.getElementById('specificMacroSettings').classList.toggle('hidden', !this.checked);
             });
         }
         
