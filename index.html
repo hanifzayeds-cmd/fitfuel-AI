@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Your existing styles remain exactly the same */
+        /* Your existing styles remain exactly the same - only adding new styles for language modal and fixing header */
         :root {
             --accent: #00ff88;
             --accent-dark: #00cc6a;
@@ -42,7 +42,8 @@
             color: #fff;
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 10px;
             min-height: 100vh;
             background-image: 
@@ -50,6 +51,72 @@
                 radial-gradient(circle at 80% 20%, rgba(113, 88, 226, 0.05) 0%, transparent 20%);
             width: 100%;
             overflow-x: hidden;
+        }
+
+        /* Fixed Header - Always Visible */
+        .fixed-header {
+            width: 100%;
+            max-width: min(800px, 95vw);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            align-items: center;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .settings-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(113,88,226,0.2));
+            border: 2px solid var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            backdrop-filter: blur(10px);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .settings-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+            border-color: white;
+            background: linear-gradient(135deg, rgba(0,255,136,0.3), rgba(113,88,226,0.3));
+        }
+
+        .about-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .about-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
         }
 
         #app-container {
@@ -62,7 +129,7 @@
             padding: clamp(20px, 5vw, 40px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
-            overflow: hidden;
+            overflow: auto;
             margin: 0 auto;
         }
 
@@ -768,49 +835,114 @@
             transform: scale(0.95);
         }
 
-        .header-controls {
-            position: absolute;
-            top: max(15px, env(safe-area-inset-top));
-            right: max(15px, env(safe-area-inset-right));
+        /* Language Modal */
+        .language-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             display: flex;
-            gap: 10px;
             align-items: center;
-            z-index: 10;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
         }
 
-        @media (max-width: 768px) {
-            .header-controls {
-                position: relative;
-                top: 0;
-                right: 0;
-                justify-content: flex-end;
-                margin-bottom: 20px;
-            }
+        .language-modal-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: clamp(25px, 6vw, 40px);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            border-top: 4px solid var(--accent);
+        }
+
+        .language-modal-content h2 {
+            color: var(--accent);
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+        }
+
+        .language-option:hover {
+            background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(113,88,226,0.15));
+            border-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .language-option.active-lang {
+            background: linear-gradient(135deg, rgba(0,255,136,0.25), rgba(113,88,226,0.25));
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0,255,136,0.3);
+        }
+
+        .language-option i {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            color: var(--accent);
+        }
+
+        .language-option span {
+            flex: 1;
+        }
+
+        .language-option .check-icon {
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .language-option.active-lang .check-icon {
+            opacity: 1;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--accent);
+            background: rgba(255,255,255,0.05);
         }
 
         .lang-selector {
-            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(113,88,226,0.1));
-            border: 1px solid rgba(0,255,136,0.3);
-            color: white;
-            padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 15px);
-            border-radius: 12px;
-            font-size: clamp(12px, 3vw, 14px);
-            cursor: pointer;
-            outline: none;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            font-weight: 600;
-            min-height: 40px;
-        }
-
-        .lang-selector:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(0,255,136,0.2);
-        }
-
-        .lang-selector option {
-            background: var(--bg-card);
-            color: white;
+            display: none;
         }
 
         .about-modal {
@@ -824,7 +956,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
             padding: 20px;
         }
 
@@ -1041,7 +1173,7 @@
                 color: black;
             }
             
-            .no-print, .floating-action, .header-controls {
+            .no-print, .floating-action, .fixed-header {
                 display: none !important;
             }
             
@@ -1118,18 +1250,23 @@
                 bottom: max(20px, env(safe-area-inset-bottom));
                 right: max(20px, env(safe-area-inset-right));
             }
+            
+            .fixed-header {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+            }
         }
 
         @media (hover: none) and (pointer: coarse) {
-            button, .feature-card, .fab {
+            button, .feature-card, .fab, .settings-btn, .about-btn {
                 -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
             }
             
-            button:hover, .feature-card:hover, .fab:hover {
+            button:hover, .feature-card:hover, .fab:hover, .settings-btn:hover, .about-btn:hover {
                 transform: none;
             }
             
-            button:active, .feature-card:active, .fab:active {
+            button:active, .feature-card:active, .fab:active, .settings-btn:active, .about-btn:active {
                 opacity: 0.8;
             }
         }
@@ -1149,35 +1286,64 @@
             }
         }
 
-        .language-selector-home {
+        .recipe-video-link {
+            margin: 15px 0 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(0,255,136,0.2);
+        }
+
+        .recipe-video-link h5 {
+            color: var(--accent);
+            margin: 0 0 10px;
             display: flex;
-            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .video-thumbnail {
+            display: flex;
+            align-items: center;
             gap: 15px;
-            margin: 20px 0;
             flex-wrap: wrap;
         }
 
-        .lang-home-btn {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid transparent;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
+        .video-thumbnail img {
+            width: 120px;
+            height: 68px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .video-thumbnail a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.3s;
-            min-width: 120px;
-        }
-
-        .lang-home-btn:hover {
-            border-color: var(--accent);
-            transform: translateY(-3px);
+            padding: 8px 15px;
             background: rgba(0,255,136,0.1);
+            border-radius: 30px;
+            border: 1px solid rgba(0,255,136,0.3);
         }
 
-        .lang-home-btn.active-lang {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(113,88,226,0.2));
-            color: var(--accent);
+        .video-thumbnail a:hover {
+            background: var(--accent);
+            color: #000;
+            transform: translateX(5px);
+        }
+
+        .video-thumbnail a i {
+            color: #ff0000;
+        }
+
+        .video-thumbnail a:hover i {
+            color: #000;
         }
 
         .day-macro-settings {
@@ -1209,37 +1375,47 @@
     </style>
 </head>
 <body>
-
-<div id="app-container">
-    <!-- Header Controls -->
-    <div class="header-controls">
-        <select class="lang-selector" id="langSelector" onchange="changeLanguage(this.value)">
-            <option value="en">🇺🇸 English</option>
-            <option value="hi">🇮🇳 हिंदी</option>
-            <option value="ta">🇮🇳 தமிழ்</option>
-        </select>
-        <button onclick="showAbout()" style="background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; padding: 5px; min-width: 44px; min-height: 44px;" title="About">
+    <!-- Fixed Header - Always Visible Outside Container -->
+    <div class="fixed-header">
+        <button class="settings-btn" onclick="showLanguageModal()" title="Language Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button class="about-btn" onclick="showAbout()" title="About">
             <i class="fas fa-question-circle"></i>
         </button>
+    </div>
+
+<div id="app-container">
+    <!-- Language Modal -->
+    <div id="language-modal" class="language-modal hidden">
+        <div class="language-modal-content">
+            <button class="close-modal-btn" onclick="hideLanguageModal()">&times;</button>
+            <h2><i class="fas fa-globe" style="color: var(--accent);"></i> Choose Language</h2>
+            
+            <div class="language-option active-lang" onclick="changeLanguageFromModal('en')">
+                <i class="fas fa-language"></i>
+                <span>English 🇺🇸</span>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+            
+            <div class="language-option" onclick="changeLanguageFromModal('hi')">
+                <i class="fas fa-language"></i>
+                <span>हिंदी 🇮🇳</span>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+            
+            <div class="language-option" onclick="changeLanguageFromModal('ta')">
+                <i class="fas fa-language"></i>
+                <span>தமிழ் 🇮🇳</span>
+                <i class="fas fa-check check-icon"></i>
+            </div>
+        </div>
     </div>
 
     <!-- Home Screen -->
     <div id="screen-home">
         <h1>FitFuel<span style="color:var(--accent)"> Pro</span></h1>
         <p class="tagline" id="tagline">AI-Powered Nutrition & Smart Meal Planning</p>
-        
-        <!-- Attractive Language Settings in Home -->
-        <div class="language-selector-home">
-            <button class="lang-home-btn active-lang" onclick="changeLanguageHome('en')">
-                <i class="fas fa-language"></i> English 🇺🇸
-            </button>
-            <button class="lang-home-btn" onclick="changeLanguageHome('hi')">
-                <i class="fas fa-language"></i> हिंदी 🇮🇳
-            </button>
-            <button class="lang-home-btn" onclick="changeLanguageHome('ta')">
-                <i class="fas fa-language"></i> தமிழ் 🇮🇳
-            </button>
-        </div>
         
         <div class="grid-options-3">
             <div class="feature-card" onclick="showScreen('screen-cheat')">
@@ -1492,7 +1668,7 @@
             <option value="General Health">General Health</option>
         </select>
         
-        <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3">
+        <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3" onchange="validateDays(this)">
         
         <!-- Day-wise Macro Settings -->
         <div id="dayMacroSettings"></div>
@@ -1696,7 +1872,7 @@
                 </div>
             </div>
             
-            <!-- Video Section -->
+            <!-- Video Section (only for non-meal plan recipes) -->
             <div id="video-box" class="video-container hidden">
                 <iframe id="recipe-video" src="" frameborder="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
@@ -1960,6 +2136,31 @@
         }
     };
 
+    // Language Modal Functions
+    function showLanguageModal() {
+        document.getElementById('language-modal').classList.remove('hidden');
+        updateLanguageModalActive();
+    }
+
+    function hideLanguageModal() {
+        document.getElementById('language-modal').classList.add('hidden');
+    }
+
+    function updateLanguageModalActive() {
+        const options = document.querySelectorAll('.language-option');
+        options.forEach(opt => {
+            opt.classList.remove('active-lang');
+            if (opt.querySelector('span').textContent.includes(currentLang === 'en' ? 'English' : currentLang === 'hi' ? 'हिंदी' : 'தமிழ்')) {
+                opt.classList.add('active-lang');
+            }
+        });
+    }
+
+    function changeLanguageFromModal(lang) {
+        changeLanguage(lang);
+        hideLanguageModal();
+    }
+
     // Clear output area function
     function clearOutputArea() {
         document.getElementById('cheat-hack-section').classList.add('hidden');
@@ -1979,6 +2180,17 @@
         document.getElementById('meal-plan-content').innerHTML = '';
         
         document.getElementById('recipe-video').src = '';
+    }
+
+    // Validate days input - max 7
+    function validateDays(input) {
+        if (input.value > 7) {
+            input.value = 7;
+            alert("Maximum days allowed is 7");
+        }
+        if (input.value < 1) {
+            input.value = 1;
+        }
     }
 
     // Toggle for cheat meal macros
@@ -2110,26 +2322,8 @@
         document.getElementById('txt-btn').textContent = t.txtBtn;
         document.getElementById('home-btn').textContent = t.homeBtn;
         
-        // Update home language buttons
-        updateHomeLanguageButtons(lang);
-    }
-
-    function changeLanguageHome(lang) {
-        changeLanguage(lang);
-        document.getElementById('langSelector').value = lang;
-        
-        // Update active class on home language buttons
-        updateHomeLanguageButtons(lang);
-    }
-
-    function updateHomeLanguageButtons(lang) {
-        const buttons = document.querySelectorAll('.lang-home-btn');
-        buttons.forEach(btn => {
-            btn.classList.remove('active-lang');
-            if (btn.textContent.includes(lang === 'en' ? 'English' : lang === 'hi' ? 'हिंदी' : 'தமிழ்')) {
-                btn.classList.add('active-lang');
-            }
-        });
+        // Update language modal active state
+        updateLanguageModalActive();
     }
 
     // About modal functions
@@ -2655,8 +2849,14 @@
         
         const dietPreference = document.getElementById('dietPreference').value;
         const mealPlanType = document.getElementById('mealPlanType').value;
-        const days = parseInt(document.getElementById('mealPlanDays').value);
+        let days = parseInt(document.getElementById('mealPlanDays').value);
         const includeShopping = document.getElementById('shoppingToggle').checked;
+        
+        // Validate days (max 7)
+        if (days > 7) {
+            days = 7;
+            document.getElementById('mealPlanDays').value = 7;
+        }
         
         if (!dietPreference || !mealPlanType || !days) {
             alert("Please fill in all fields!");
@@ -2701,6 +2901,8 @@
         ${includeShopping ? 'Include a detailed shopping list.' : ''}
         ${languageInstruction}
         
+        IMPORTANT: Include a YouTube video search query for each recipe so users can find tutorials.
+        
         Return ONLY valid JSON (no other text): {
             "plan_title": "Meal plan title",
             "description": "Brief description",
@@ -2710,9 +2912,9 @@
             "meals": {
                 ${Array.from({length: days}, (_, i) => `
                 "day_${i+1}": {
-                    "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
-                    "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
-                    "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": ""},
+                    "breakfast": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": "", "video_query": ""},
+                    "lunch": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": "", "video_query": ""},
+                    "dinner": {"name": "", "description": "", "calories": "", "protein": "", "prep_time": "", "video_query": ""},
                     "snacks": ["Snack 1", "Snack 2"]
                 }`).join(',')}
             },
@@ -2782,6 +2984,39 @@
         }
     }
 
+    async function fetchMealVideo(query, elementId) {
+        if (!query) return;
+        
+        try {
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(query)}&key=${YOUTUBE_API_KEY}&type=video`;
+            const res = await fetch(url);
+            if (!res.ok) return;
+            
+            const data = await res.json();
+            if (data.items && data.items[0]) {
+                const vidId = data.items[0].id.videoId;
+                const videoTitle = data.items[0].snippet.title;
+                const thumbnail = data.items[0].snippet.thumbnails.medium.url;
+                
+                const videoHtml = `
+                    <div class="recipe-video-link">
+                        <h5><i class="fab fa-youtube" style="color: #ff0000;"></i> Watch Recipe Video</h5>
+                        <div class="video-thumbnail">
+                            <img src="${thumbnail}" alt="${videoTitle}">
+                            <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank">
+                                <i class="fab fa-youtube"></i> Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById(elementId).insertAdjacentHTML('beforeend', videoHtml);
+            }
+        } catch (e) {
+            console.log("Video search error for:", query);
+        }
+    }
+
     function renderMealPlan(plan) {
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('output-area').classList.remove('hidden');
@@ -2815,7 +3050,7 @@
             if (plan.meals[dayKey]) {
                 const dayMeals = plan.meals[dayKey];
                 mealPlanHtml += `
-                    <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.05);" id="day-${day}-container">
                         <h3 style="color: var(--accent); margin-top: 0;">Day ${day}</h3>
                         
                         <h4><i class="fas fa-sun"></i> Breakfast</h4>
@@ -2825,6 +3060,7 @@
                             <span><i class="fas fa-dumbbell"></i> ${dayMeals.breakfast.protein}</span>
                             <span><i class="fas fa-clock"></i> ${dayMeals.breakfast.prep_time}</span>
                         </div>
+                        <div id="breakfast-video-${day}"></div>
                         
                         <h4><i class="fas fa-sun"></i> Lunch</h4>
                         <p><strong>${dayMeals.lunch.name}</strong> - ${dayMeals.lunch.description}</p>
@@ -2833,6 +3069,7 @@
                             <span><i class="fas fa-dumbbell"></i> ${dayMeals.lunch.protein}</span>
                             <span><i class="fas fa-clock"></i> ${dayMeals.lunch.prep_time}</span>
                         </div>
+                        <div id="lunch-video-${day}"></div>
                         
                         <h4><i class="fas fa-moon"></i> Dinner</h4>
                         <p><strong>${dayMeals.dinner.name}</strong> - ${dayMeals.dinner.description}</p>
@@ -2841,6 +3078,7 @@
                             <span><i class="fas fa-dumbbell"></i> ${dayMeals.dinner.protein}</span>
                             <span><i class="fas fa-clock"></i> ${dayMeals.dinner.prep_time}</span>
                         </div>
+                        <div id="dinner-video-${day}"></div>
                 `;
                 
                 if (dayMeals.snacks && dayMeals.snacks.length > 0) {
@@ -2910,8 +3148,23 @@
         for (let day = 1; day <= plan.days; day++) {
             const dayKey = `day_${day}`;
             if (plan.meals[dayKey]) {
-                fetchVideo(plan.meals[dayKey].breakfast.name + " recipe");
-                break; // Just fetch one video for now to keep it simple
+                // Breakfast video
+                if (plan.meals[dayKey].breakfast.video_query || plan.meals[dayKey].breakfast.name) {
+                    const query = plan.meals[dayKey].breakfast.video_query || plan.meals[dayKey].breakfast.name + " recipe";
+                    fetchMealVideo(query, `breakfast-video-${day}`);
+                }
+                
+                // Lunch video
+                if (plan.meals[dayKey].lunch.video_query || plan.meals[dayKey].lunch.name) {
+                    const query = plan.meals[dayKey].lunch.video_query || plan.meals[dayKey].lunch.name + " recipe";
+                    fetchMealVideo(query, `lunch-video-${day}`);
+                }
+                
+                // Dinner video
+                if (plan.meals[dayKey].dinner.video_query || plan.meals[dayKey].dinner.name) {
+                    const query = plan.meals[dayKey].dinner.video_query || plan.meals[dayKey].dinner.name + " recipe";
+                    fetchMealVideo(query, `dinner-video-${day}`);
+                }
             }
         }
     }
@@ -3044,6 +3297,9 @@
     }
 
     async function fetchVideo(q) {
+        // Skip video fetch if it's a meal plan (handled separately)
+        if (currentGenerationType === 'mealplan') return;
+        
         const searchTerms = [
             q,
             q + " recipe",
@@ -3208,6 +3464,12 @@
         document.getElementById('about-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 hideAbout();
+            }
+        });
+        
+        document.getElementById('language-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLanguageModal();
             }
         });
         
