@@ -24,8 +24,6 @@
             --purple: #7158e2;
             --blue: #3498db;
             --gold: #ffd700;
-            --silver: #c0c0c0;
-            --bronze: #cd7f32;
         }
 
         * {
@@ -60,67 +58,31 @@
             position: relative;
         }
 
-        /* Enhanced Scrollbar for #app-container */
+        /* Enhanced Scrollbar for #app-container - HIDDEN */
         #app-container {
             width: 100%;
             max-width: min(800px, 95vw);
             background: transparent;
             backdrop-filter: blur(25px);
             padding: clamp(10px, 3vw, 20px);
+            padding-bottom: 80px; /* Added extra padding at bottom for buttons */
             position: relative;
             overflow-y: auto;
             overflow-x: hidden;
             margin: 0 auto;
             flex: 1;
             scroll-behavior: smooth;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+            scrollbar-width: none; /* Firefox - hide scrollbar */
+            -ms-overflow-style: none; /* IE and Edge - hide scrollbar */
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Custom Scrollbar for WebKit browsers */
+        /* Hide scrollbar for Chrome, Safari and Opera */
         #app-container::-webkit-scrollbar {
-            width: 8px;
-            display: block;
+            display: none; /* Chrome, Safari, Opera - hide scrollbar */
         }
 
-        #app-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin: 5px;
-        }
-
-        #app-container::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            border-radius: 10px;
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            transition: all 0.3s;
-        }
-
-        #app-container::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, var(--accent-light), var(--accent));
-            transform: scale(1.1);
-        }
-
-        /* Scroll Progress Indicator */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--purple), var(--accent));
-            z-index: 9999;
-            transform-origin: 0 50%;
-            animation: progressPulse 2s ease-in-out infinite;
-            display: none;
-        }
-
-        @keyframes progressPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
+        /* Scroll Progress Indicator - Removed */
 
         /* Smooth Scroll Animations */
         .fade-in-up {
@@ -180,76 +142,6 @@
             to {
                 opacity: 1;
                 transform: scale(1);
-            }
-        }
-
-        .flip-in {
-            animation: flipIn 0.6s ease-out forwards;
-            transform-style: preserve-3d;
-        }
-
-        @keyframes flipIn {
-            from {
-                opacity: 0;
-                transform: perspective(400px) rotateX(90deg);
-            }
-            to {
-                opacity: 1;
-                transform: perspective(400px) rotateX(0deg);
-            }
-        }
-
-        .bounce-in {
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-        }
-
-        @keyframes bounceIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 0.9;
-                transform: scale(1.1);
-            }
-            80% {
-                opacity: 1;
-                transform: scale(0.89);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Scroll-triggered animations */
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
-        }
-
-        .scroll-reveal.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Stagger children animations */
-        .stagger-children > * {
-            opacity: 0;
-            animation: staggerFadeIn 0.5s ease-out forwards;
-        }
-
-        .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-        .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-        .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-        .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
-        .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
-        .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
-
-        @keyframes staggerFadeIn {
-            to {
-                opacity: 1;
             }
         }
 
@@ -318,6 +210,31 @@
             border-color: var(--accent);
             transform: scale(1.1);
             box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .feedback-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.1));
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .feedback-btn:hover {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            transform: scale(1.1) rotate(360deg);
+            box-shadow: 0 8px 20px rgba(255,215,0,0.3);
         }
 
         .hidden { display: none !important; }
@@ -607,18 +524,6 @@
             font-size: clamp(2rem, 6vw, 2.5rem);
             margin-bottom: 15px;
             color: var(--accent);
-        }
-
-        .feature-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .feature-title i {
-            color: var(--accent);
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
         }
 
         .toggle-container {
@@ -1125,8 +1030,7 @@
 
         /* Fixed Modals - Always centered */
         .language-modal,
-        .about-modal,
-        .feedback-modal {
+        .about-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -1142,8 +1046,7 @@
         }
 
         .language-modal-content,
-        .about-content,
-        .feedback-content {
+        .about-content {
             background: linear-gradient(135deg, #1a1a1f 0%, #121214 100%);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 32px;
@@ -1158,8 +1061,7 @@
             margin: auto;
         }
 
-        .about-content,
-        .feedback-content {
+        .about-content {
             max-width: 650px;
         }
 
@@ -1497,6 +1399,7 @@
             #app-container {
                 padding-left: max(20px, env(safe-area-inset-left));
                 padding-right: max(20px, env(safe-area-inset-right));
+                padding-bottom: max(80px, env(safe-area-inset-bottom) + 60px);
             }
             
             .floating-action {
@@ -1511,15 +1414,15 @@
         }
 
         @media (hover: none) and (pointer: coarse) {
-            button, .feature-card, .fab, .settings-btn, .about-btn {
+            button, .feature-card, .fab, .settings-btn, .about-btn, .feedback-btn {
                 -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
             }
             
-            button:hover, .feature-card:hover, .fab:hover, .settings-btn:hover, .about-btn:hover {
+            button:hover, .feature-card:hover, .fab:hover, .settings-btn:hover, .about-btn:hover, .feedback-btn:hover {
                 transform: none;
             }
             
-            button:active, .feature-card:active, .fab:active, .settings-btn:active, .about-btn:active {
+            button:active, .feature-card:active, .fab:active, .settings-btn:active, .about-btn:active, .feedback-btn:active {
                 opacity: 0.8;
             }
         }
@@ -1626,220 +1529,34 @@
             padding: 15px 0;
         }
 
-        /* Customer Feedback Styles */
-        .feedback-section {
-            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 20px;
-            padding: 30px 20px;
-            margin: 30px 0;
-            text-align: center;
-            position: relative;
+        /* Action buttons container - fixed spacing */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0 30px 0;
+            padding-bottom: 20px;
+        }
+
+        .action-buttons button {
+            min-width: 0;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .feedback-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-            animation: rotateFeedback 20s linear infinite;
-        }
-
-        @keyframes rotateFeedback {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .feedback-section h3 {
-            color: var(--gold);
-            position: relative;
-            z-index: 1;
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            margin-bottom: 10px;
-        }
-
-        .feedback-section p {
-            color: var(--text-bright);
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .rating-stars {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .rating-star {
-            font-size: clamp(2rem, 6vw, 3rem);
-            color: rgba(255,215,0,0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .rating-star:hover,
-        .rating-star.active {
-            color: var(--gold);
-            transform: scale(1.2);
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-        }
-
-        .feedback-input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,215,0,0.3);
-            border-radius: 15px;
-            color: white;
-            margin: 20px 0;
-            position: relative;
-            z-index: 1;
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .feedback-input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-
-        .feedback-submit {
-            background: linear-gradient(135deg, var(--gold), #ffaa00);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-        }
-
-        .feedback-submit:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
-        }
-
-        .feedback-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .feedback-success {
-            background: rgba(0,255,136,0.2);
-            border: 1px solid var(--accent);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        .feedback-success i {
-            font-size: 3rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-
-        .feedback-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--gold);
-        }
-
-        .stat-label {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-        }
-
-        .testimonials-carousel {
-            background: rgba(255,255,255,0.02);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .testimonial {
-            display: none;
-            padding: 15px;
-            border-left: 3px solid var(--gold);
-            background: rgba(255,215,0,0.05);
-            border-radius: 10px;
-        }
-
-        .testimonial.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        .testimonial p {
-            font-style: italic;
-            margin-bottom: 10px;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        .testimonial-author i {
-            font-size: 1.2rem;
-        }
-
-        .feedback-btn {
-            background: linear-gradient(135deg, var(--gold), #ffaa00);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            max-width: 250px;
-            margin: 20px auto;
-        }
-
-        .feedback-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        @media (max-width: 480px) {
+            .action-buttons {
+                gap: 8px;
+            }
+            
+            .action-buttons button span {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Scroll Progress Indicator -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
     <!-- Fixed Header - Always Visible Outside Container -->
     <div class="fixed-header">
         <button class="settings-btn" onclick="showLanguageModal()" title="Language Settings">
@@ -1848,48 +1565,34 @@
         <button class="about-btn" onclick="showAbout()" title="About">
             <i class="fas fa-question-circle"></i>
         </button>
-        <button class="about-btn" onclick="showFeedbackModal()" title="Give Feedback" style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.1)); border-color: var(--gold); color: var(--gold);">
+        <button class="feedback-btn" onclick="sendFeedbackEmail()" title="Give Feedback">
             <i class="fas fa-star"></i>
         </button>
     </div>
 
 <div id="app-container" class="scroll-container">
-    <!-- Feedback Modal -->
-    <div id="feedback-modal" class="feedback-modal hidden">
-        <div class="feedback-content">
-            <button class="close-modal" onclick="hideFeedbackModal()">&times;</button>
-            <h2 style="color: var(--gold);"><i class="fas fa-star"></i> Share Your Feedback</h2>
-            <p>Help us improve FitFuel Pro! Your feedback is valuable to us.</p>
+    <!-- Language Modal -->
+    <div id="language-modal" class="language-modal hidden">
+        <div class="language-modal-content">
+            <button class="close-modal-btn" onclick="hideLanguageModal()">&times;</button>
+            <h2><i class="fas fa-globe"></i> Choose Language</h2>
             
-            <div class="rating-stars" id="ratingStars">
-                <i class="fas fa-star rating-star" data-rating="1"></i>
-                <i class="fas fa-star rating-star" data-rating="2"></i>
-                <i class="fas fa-star rating-star" data-rating="3"></i>
-                <i class="fas fa-star rating-star" data-rating="4"></i>
-                <i class="fas fa-star rating-star" data-rating="5"></i>
+            <div class="language-option active-lang" onclick="changeLanguageFromModal('en')">
+                <i class="fas fa-language"></i>
+                <span>English 🇺🇸</span>
+                <i class="fas fa-check check-icon"></i>
             </div>
             
-            <textarea class="feedback-input" id="feedbackText" placeholder="Tell us about your experience... (e.g., What features do you like? What can we improve?)"></textarea>
+            <div class="language-option" onclick="changeLanguageFromModal('hi')">
+                <i class="fas fa-language"></i>
+                <span>हिंदी 🇮🇳</span>
+                <i class="fas fa-check check-icon"></i>
+            </div>
             
-            <input type="email" class="feedback-input" id="feedbackEmail" placeholder="Your email (optional)" style="min-height: auto;" value="hanifzayedsharif@gmail.com">
-            
-            <button class="feedback-submit" onclick="submitFeedback()" id="submitFeedbackBtn">
-                <i class="fas fa-paper-plane"></i> Send Feedback
-            </button>
-            
-            <div class="feedback-stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="totalFeedbackCount">0</div>
-                    <div class="stat-label">Total Reviews</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="avgRating">0.0</div>
-                    <div class="stat-label">Avg Rating</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="satisfactionRate">0%</div>
-                    <div class="stat-label">Satisfaction</div>
-                </div>
+            <div class="language-option" onclick="changeLanguageFromModal('ta')">
+                <i class="fas fa-language"></i>
+                <span>தமிழ் 🇮🇳</span>
+                <i class="fas fa-check check-icon"></i>
             </div>
         </div>
     </div>
@@ -1958,57 +1661,6 @@
             <button class="btn-primary" onclick="startPantry()">
                 <i class="fas fa-magic"></i> <span id="build-ingredients">Build from Ingredients</span>
             </button>
-        </div>
-
-        <!-- Customer Feedback Section -->
-        <div class="feedback-section zoom-in" style="animation-delay: 0.7s;">
-            <h3><i class="fas fa-star"></i> Love FitFuel Pro?</h3>
-            <p>Share your experience and help us improve! Your feedback makes a difference.</p>
-            
-            <div class="rating-stars" id="homeRatingStars">
-                <i class="fas fa-star rating-star" data-rating="1"></i>
-                <i class="fas fa-star rating-star" data-rating="2"></i>
-                <i class="fas fa-star rating-star" data-rating="3"></i>
-                <i class="fas fa-star rating-star" data-rating="4"></i>
-                <i class="fas fa-star rating-star" data-rating="5"></i>
-            </div>
-            
-            <textarea class="feedback-input" id="homeFeedbackText" placeholder="Tell us about your experience... (e.g., What features do you like? What can we improve?)" style="min-height: 80px;"></textarea>
-            
-            <button class="feedback-btn" onclick="submitHomeFeedback()">
-                <i class="fas fa-paper-plane"></i> Send Feedback
-            </button>
-        </div>
-
-        <!-- Testimonials Carousel -->
-        <div class="testimonials-carousel zoom-in" style="animation-delay: 0.8s;">
-            <h3 style="color: var(--gold); text-align: center;"><i class="fas fa-comment-dots"></i> What Our Users Say</h3>
-            <div id="testimonialsCarousel">
-                <div class="testimonial active">
-                    <p>"FitFuel Pro completely transformed my meal prep! The cheat meal converter is genius - I can enjoy my favorite foods guilt-free!"</p>
-                    <div class="testimonial-author">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Sarah Johnson</span>
-                        <span style="color: var(--gold);">★★★★★</span>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <p>"The AI meal plans are incredibly accurate and personalized. I've lost 15 lbs in 2 months following these recipes!"</p>
-                    <div class="testimonial-author">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Mike Chen</span>
-                        <span style="color: var(--gold);">★★★★★</span>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <p>"As a fitness trainer, I recommend this app to all my clients. The macro tracking and cost analysis are game-changers!"</p>
-                    <div class="testimonial-author">
-                        <i class="fas fa-user-circle"></i>
-                        <span>David Martinez</span>
-                        <span style="color: var(--gold);">★★★★★</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -2455,8 +2107,8 @@
                 <iframe id="recipe-video" src="" frameborder="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="grid-options" style="grid-template-columns: 1fr 1fr 1fr;">
+            <!-- Action Buttons - Fixed with proper spacing -->
+            <div class="action-buttons">
                 <button onclick="copyRecipe()"><i class="fas fa-copy"></i> <span id="copy-btn">Copy</span></button>
                 <button onclick="downloadTXT()" style="background: var(--accent); color:#000;">
                     <i class="fas fa-file-alt"></i> <span id="txt-btn">Save Text</span>
@@ -2489,12 +2141,6 @@
     let loadingInterval;
     let tipInterval;
     let liveUpdateInterval;
-    
-    // Feedback storage
-    let feedbacks = JSON.parse(localStorage.getItem('fitfuelFeedbacks')) || [];
-    
-    // Scroll Progress
-    let scrollProgress = document.getElementById('scrollProgress');
     
     // Language translations
     const translations = {
@@ -2558,7 +2204,6 @@
             copyBtn: "Copy",
             txtBtn: "Save Text",
             homeBtn: "Home",
-            newBtn: "New",
             aboutIntro: "FitFuel Pro is an AI-powered nutrition assistant that helps you create healthy, personalized meal plans based on your goals, preferences, and available ingredients.",
             loaderTitle: "AI Chef is Crafting Your Recipe",
             loaderMessage: "Analyzing ingredients, calculating nutrition, and optimizing for your goals...",
@@ -2632,7 +2277,6 @@
             copyBtn: "कॉपी",
             txtBtn: "सेव टेक्स्ट",
             homeBtn: "होम",
-            newBtn: "नया",
             aboutIntro: "FitFuel Pro एक AI-संचालित पोषण सहायक है जो आपकी लक्ष्य, प्राथमिकताओं और उपलब्ध सामग्री के आधार पर स्वस्थ, व्यक्तिगत भोजन योजनाएं बनाने में मदद करता है।",
             loaderTitle: "AI शेफ आपकी रेसिपी बना रहा है",
             loaderMessage: "सामग्रियों का विश्लेषण, पोषण गणना और आपके लक्ष्यों के लिए अनुकूलन...",
@@ -2706,7 +2350,6 @@
             copyBtn: "நகலெடு",
             txtBtn: "சேவ் டெக்ஸ்ட்",
             homeBtn: "முகப்பு",
-            newBtn: "புதியது",
             aboutIntro: "FitFuel Pro என்பது ஒரு AI-இயக்கப்பட்ட ஊட்டச்சத்து உதவியாளர் ஆகும், இது உங்கள் இலக்குகள், விருப்பங்கள் மற்றும் கிடைக்கக்கூடிய பொருட்களின் அடிப்படையில் ஆரோக்கியமான, தனிப்பட்ட உணவு திட்டங்களை உருவாக்க உதவுகிறது.",
             loaderTitle: "AI சமையல்காரர் உங்கள் செய்முறையை உருவாக்குகிறார்",
             loaderMessage: "பொருட்களை பகுப்பாய்வு செய்தல், ஊட்டச்சத்து கணக்கிடுதல் மற்றும் உங்கள் இலக்குகளுக்கு உகந்ததாக்குதல்...",
@@ -2745,6 +2388,14 @@
     function changeLanguageFromModal(lang) {
         changeLanguage(lang);
         hideLanguageModal();
+    }
+
+    // Feedback function - opens email client
+    function sendFeedbackEmail() {
+        const subject = "FitFuel Pro Feedback";
+        const body = "I'd like to share my feedback about FitFuel Pro:\n\n";
+        const mailtoLink = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
     }
 
     // Clear output area function
@@ -2829,9 +2480,6 @@
         if (id === 'screen-ai-meal') {
             generateDayMacroSettings();
         }
-        
-        // Update feedback stats
-        updateFeedbackStats();
     }
 
     function generateDayMacroSettings() {
@@ -2936,16 +2584,6 @@
 
     function hideAbout() {
         document.getElementById('about-modal').classList.add('hidden');
-    }
-
-    // Feedback modal functions
-    function showFeedbackModal() {
-        document.getElementById('feedback-modal').classList.remove('hidden');
-        updateFeedbackStats();
-    }
-
-    function hideFeedbackModal() {
-        document.getElementById('feedback-modal').classList.add('hidden');
     }
 
     // Update live feed steps
@@ -4118,243 +3756,9 @@
         }, 2000);
     }
 
-    // Feedback Functions
-    function initRatingStars() {
-        const stars = document.querySelectorAll('.rating-star');
-        stars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.dataset.rating;
-                stars.forEach(s => s.classList.remove('active'));
-                for (let i = 0; i < rating; i++) {
-                    stars[i].classList.add('active');
-                }
-            });
-            
-            star.addEventListener('mouseover', function() {
-                const rating = this.dataset.rating;
-                stars.forEach(s => s.style.color = 'rgba(255,215,0,0.3)');
-                for (let i = 0; i < rating; i++) {
-                    stars[i].style.color = 'var(--gold)';
-                }
-            });
-            
-            star.addEventListener('mouseout', function() {
-                stars.forEach(s => {
-                    s.style.color = s.classList.contains('active') ? 'var(--gold)' : 'rgba(255,215,0,0.3)';
-                });
-            });
-        });
-    }
-
-    function submitFeedback() {
-        const stars = document.querySelectorAll('#ratingStars .rating-star');
-        let rating = 0;
-        stars.forEach((star, index) => {
-            if (star.classList.contains('active')) {
-                rating = index + 1;
-            }
-        });
-        
-        const feedbackText = document.getElementById('feedbackText').value;
-        const email = document.getElementById('feedbackEmail').value;
-        
-        if (rating === 0) {
-            alert("Please select a rating!");
-            return;
-        }
-        
-        if (!feedbackText.trim()) {
-            alert("Please enter your feedback!");
-            return;
-        }
-        
-        const feedback = {
-            rating: rating,
-            text: feedbackText,
-            email: email || "anonymous",
-            date: new Date().toISOString()
-        };
-        
-        feedbacks.push(feedback);
-        localStorage.setItem('fitfuelFeedbacks', JSON.stringify(feedbacks));
-        
-        // Send to email (simulate - in production, this would be a server-side call)
-        sendFeedbackToEmail(feedback);
-        
-        showFeedbackSuccess();
-        updateFeedbackStats();
-        
-        // Clear form
-        document.getElementById('feedbackText').value = '';
-        stars.forEach(s => s.classList.remove('active'));
-        
-        // Add testimonial
-        addTestimonial(feedback);
-    }
-
-    function submitHomeFeedback() {
-        const stars = document.querySelectorAll('#homeRatingStars .rating-star');
-        let rating = 0;
-        stars.forEach((star, index) => {
-            if (star.classList.contains('active')) {
-                rating = index + 1;
-            }
-        });
-        
-        const feedbackText = document.getElementById('homeFeedbackText').value;
-        
-        if (rating === 0) {
-            alert("Please select a rating!");
-            return;
-        }
-        
-        if (!feedbackText.trim()) {
-            alert("Please enter your feedback!");
-            return;
-        }
-        
-        const feedback = {
-            rating: rating,
-            text: feedbackText,
-            email: "hanifzayedsharif@gmail.com",
-            date: new Date().toISOString()
-        };
-        
-        feedbacks.push(feedback);
-        localStorage.setItem('fitfuelFeedbacks', JSON.stringify(feedbacks));
-        
-        // Send to email
-        sendFeedbackToEmail(feedback);
-        
-        alert("Thank you for your feedback!");
-        
-        // Clear form
-        document.getElementById('homeFeedbackText').value = '';
-        stars.forEach(s => s.classList.remove('active'));
-        
-        // Add testimonial
-        addTestimonial(feedback);
-    }
-
-    function sendFeedbackToEmail(feedback) {
-        // In a production environment, this would be a server-side call
-        // For now, we'll simulate sending an email
-        console.log("Sending feedback to:", FEEDBACK_EMAIL);
-        console.log("Feedback:", feedback);
-        
-        // You can create a mailto link as a simple fallback
-        const subject = `FitFuel Pro Feedback - Rating: ${feedback.rating} Stars`;
-        const body = `Rating: ${feedback.rating} Stars\n\nFeedback: ${feedback.text}\n\nDate: ${new Date(feedback.date).toLocaleString()}\nEmail: ${feedback.email}`;
-        const mailtoLink = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        // Optionally open mail client
-        // window.location.href = mailtoLink;
-    }
-
-    function showFeedbackSuccess() {
-        const successDiv = document.createElement('div');
-        successDiv.className = 'feedback-success';
-        successDiv.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <h3>Thank You!</h3>
-            <p>Your feedback has been sent successfully!</p>
-        `;
-        
-        const modalContent = document.querySelector('.feedback-content');
-        modalContent.insertBefore(successDiv, modalContent.querySelector('.feedback-stats'));
-        
-        setTimeout(() => {
-            successDiv.remove();
-            hideFeedbackModal();
-        }, 3000);
-    }
-
-    function updateFeedbackStats() {
-        const total = feedbacks.length;
-        document.getElementById('totalFeedbackCount').textContent = total;
-        
-        if (total > 0) {
-            const avgRating = feedbacks.reduce((sum, f) => sum + f.rating, 0) / total;
-            document.getElementById('avgRating').textContent = avgRating.toFixed(1);
-            
-            const satisfaction = (feedbacks.filter(f => f.rating >= 4).length / total) * 100;
-            document.getElementById('satisfactionRate').textContent = Math.round(satisfaction) + '%';
-        } else {
-            document.getElementById('avgRating').textContent = '0.0';
-            document.getElementById('satisfactionRate').textContent = '0%';
-        }
-    }
-
-    function addTestimonial(feedback) {
-        if (feedback.rating >= 4 && feedback.text.length > 20) {
-            const testimonialDiv = document.createElement('div');
-            testimonialDiv.className = 'testimonial';
-            testimonialDiv.innerHTML = `
-                <p>"${feedback.text.substring(0, 100)}${feedback.text.length > 100 ? '...' : ''}"</p>
-                <div class="testimonial-author">
-                    <i class="fas fa-user-circle"></i>
-                    <span>${feedback.email === 'hanifzayedsharif@gmail.com' ? 'FitFuel User' : feedback.email.split('@')[0]}</span>
-                    <span style="color: var(--gold);">${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}</span>
-                </div>
-            `;
-            
-            const carousel = document.getElementById('testimonialsCarousel');
-            carousel.appendChild(testimonialDiv);
-            
-            // Start carousel rotation if more than one testimonial
-            if (carousel.children.length > 1) {
-                startTestimonialCarousel();
-            }
-        }
-    }
-
-    function startTestimonialCarousel() {
-        const testimonials = document.querySelectorAll('.testimonial');
-        let currentIndex = 0;
-        
-        setInterval(() => {
-            testimonials.forEach(t => t.classList.remove('active'));
-            currentIndex = (currentIndex + 1) % testimonials.length;
-            testimonials[currentIndex].classList.add('active');
-        }, 5000);
-    }
-
-    // Scroll Progress Indicator
-    function initScrollProgress() {
-        const container = document.getElementById('app-container');
-        const progress = document.getElementById('scrollProgress');
-        
-        container.addEventListener('scroll', () => {
-            const scrollTop = container.scrollTop;
-            const scrollHeight = container.scrollHeight - container.clientHeight;
-            const scrollPercent = (scrollTop / scrollHeight) * 100;
-            progress.style.width = scrollPercent + '%';
-            progress.style.display = scrollPercent > 0 ? 'block' : 'none';
-        });
-    }
-
-    // Intersection Observer for scroll animations
-    function initScrollReveal() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.scroll-reveal').forEach(el => {
-            observer.observe(el);
-        });
-    }
-
     // Initialize application
     document.addEventListener('DOMContentLoaded', function() {
         changeLanguage('en');
-        initRatingStars();
-        initScrollProgress();
-        initScrollReveal();
-        updateFeedbackStats();
         
         document.getElementById('about-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
@@ -4365,12 +3769,6 @@
         document.getElementById('language-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 hideLanguageModal();
-            }
-        });
-        
-        document.getElementById('feedback-modal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                hideFeedbackModal();
             }
         });
         
@@ -4404,35 +3802,12 @@
             });
         }
         
-        // Initialize home screen rating stars
-        const homeStars = document.querySelectorAll('#homeRatingStars .rating-star');
-        homeStars.forEach(star => {
-            star.addEventListener('click', function() {
-                const rating = this.dataset.rating;
-                homeStars.forEach(s => s.classList.remove('active'));
-                for (let i = 0; i < rating; i++) {
-                    homeStars[i].classList.add('active');
-                }
-            });
-            
-            star.addEventListener('mouseover', function() {
-                const rating = this.dataset.rating;
-                homeStars.forEach(s => s.style.color = 'rgba(255,215,0,0.3)');
-                for (let i = 0; i < rating; i++) {
-                    homeStars[i].style.color = 'var(--gold)';
-                }
-            });
-            
-            star.addEventListener('mouseout', function() {
-                homeStars.forEach(s => {
-                    s.style.color = s.classList.contains('active') ? 'var(--gold)' : 'rgba(255,215,0,0.3)';
-                });
-            });
-        });
+        // Test feedback button on page load
+        console.log('Feedback button ready. Email set to:', FEEDBACK_EMAIL);
         
         showScreen('screen-home');
         
-        console.log('FitFuel Pro initialized successfully with enhanced animations and feedback system');
+        console.log('FitFuel Pro initialized successfully with fixed settings button, hidden scrollbar, and email feedback');
     });
 </script>
 </body>
