@@ -23,6 +23,9 @@
             --info: #2ed573;
             --purple: #7158e2;
             --blue: #3498db;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
         }
 
         * {
@@ -36,6 +39,7 @@
             -webkit-tap-highlight-color: transparent;
             height: 100%;
             overflow: hidden;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -54,6 +58,199 @@
                 radial-gradient(circle at 80% 20%, rgba(113, 88, 226, 0.05) 0%, transparent 20%);
             width: 100%;
             position: relative;
+        }
+
+        /* Enhanced Scrollbar for #app-container */
+        #app-container {
+            width: 100%;
+            max-width: min(800px, 95vw);
+            background: transparent;
+            backdrop-filter: blur(25px);
+            padding: clamp(10px, 3vw, 20px);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin: 0 auto;
+            flex: 1;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Custom Scrollbar for WebKit browsers */
+        #app-container::-webkit-scrollbar {
+            width: 8px;
+            display: block;
+        }
+
+        #app-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 5px;
+        }
+
+        #app-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.3s;
+        }
+
+        #app-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            transform: scale(1.1);
+        }
+
+        /* Scroll Progress Indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--purple), var(--accent));
+            z-index: 9999;
+            transform-origin: 0 50%;
+            animation: progressPulse 2s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes progressPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Smooth Scroll Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .zoom-in {
+            animation: zoomIn 0.5s ease-out forwards;
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .flip-in {
+            animation: flipIn 0.6s ease-out forwards;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes flipIn {
+            from {
+                opacity: 0;
+                transform: perspective(400px) rotateX(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(400px) rotateX(0deg);
+            }
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.1);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(0.89);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Scroll-triggered animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children animations */
+        .stagger-children > * {
+            opacity: 0;
+            animation: staggerFadeIn 0.5s ease-out forwards;
+        }
+
+        .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes staggerFadeIn {
+            to {
+                opacity: 1;
+            }
         }
 
         /* Fixed Header - Always Visible Outside Container */
@@ -121,25 +318,6 @@
             border-color: var(--accent);
             transform: scale(1.1);
             box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
-        }
-
-        #app-container {
-            width: 100%;
-            max-width: min(800px, 95vw);
-            background: transparent;
-            backdrop-filter: blur(25px);
-            padding: clamp(10px, 3vw, 20px);
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            margin: 0 auto;
-            flex: 1;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
-        }
-
-        #app-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
         }
 
         .hidden { display: none !important; }
@@ -393,18 +571,36 @@
             border-radius: 16px;
             padding: clamp(15px, 4vw, 25px);
             margin-bottom: 25px;
-            transition: transform 0.3s, border-color 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+            transition: left 0.5s;
         }
 
         .feature-card:hover {
             border-color: var(--accent);
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(0,255,136,0.2);
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
         }
 
         .feature-card:active {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.01);
         }
 
         .feature-icon {
@@ -929,7 +1125,8 @@
 
         /* Fixed Modals - Always centered */
         .language-modal,
-        .about-modal {
+        .about-modal,
+        .feedback-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -945,7 +1142,8 @@
         }
 
         .language-modal-content,
-        .about-content {
+        .about-content,
+        .feedback-content {
             background: linear-gradient(135deg, #1a1a1f 0%, #121214 100%);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 32px;
@@ -960,7 +1158,8 @@
             margin: auto;
         }
 
-        .about-content {
+        .about-content,
+        .feedback-content {
             max-width: 650px;
         }
 
@@ -1426,9 +1625,221 @@
         .day-content {
             padding: 15px 0;
         }
+
+        /* Customer Feedback Styles */
+        .feedback-section {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin: 30px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feedback-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotateFeedback 20s linear infinite;
+        }
+
+        @keyframes rotateFeedback {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .feedback-section h3 {
+            color: var(--gold);
+            position: relative;
+            z-index: 1;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 10px;
+        }
+
+        .feedback-section p {
+            color: var(--text-bright);
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rating-star {
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: rgba(255,215,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rating-star:hover,
+        .rating-star.active {
+            color: var(--gold);
+            transform: scale(1.2);
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .feedback-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 15px;
+            color: white;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .feedback-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+
+        .feedback-submit {
+            background: linear-gradient(135deg, var(--gold), #ffaa00);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .feedback-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+        }
+
+        .feedback-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback-success {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid var(--accent);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .feedback-success i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .feedback-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .testimonials-carousel {
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .testimonial {
+            display: none;
+            padding: 15px;
+            border-left: 3px solid var(--gold);
+            background: rgba(255,215,0,0.05);
+            border-radius: 10px;
+        }
+
+        .testimonial.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .testimonial-author i {
+            font-size: 1.2rem;
+        }
+
+        .feedback-btn {
+            background: linear-gradient(135deg, var(--gold), #ffaa00);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto;
+        }
+
+        .feedback-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+        }
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
     <!-- Fixed Header - Always Visible Outside Container -->
     <div class="fixed-header">
         <button class="settings-btn" onclick="showLanguageModal()" title="Language Settings">
@@ -1437,42 +1848,59 @@
         <button class="about-btn" onclick="showAbout()" title="About">
             <i class="fas fa-question-circle"></i>
         </button>
+        <button class="about-btn" onclick="showFeedbackModal()" title="Give Feedback" style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.1)); border-color: var(--gold); color: var(--gold);">
+            <i class="fas fa-star"></i>
+        </button>
     </div>
 
-<div id="app-container">
-    <!-- Language Modal -->
-    <div id="language-modal" class="language-modal hidden">
-        <div class="language-modal-content">
-            <button class="close-modal-btn" onclick="hideLanguageModal()">&times;</button>
-            <h2><i class="fas fa-globe"></i> Choose Language</h2>
+<div id="app-container" class="scroll-container">
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="feedback-modal hidden">
+        <div class="feedback-content">
+            <button class="close-modal" onclick="hideFeedbackModal()">&times;</button>
+            <h2 style="color: var(--gold);"><i class="fas fa-star"></i> Share Your Feedback</h2>
+            <p>Help us improve FitFuel Pro! Your feedback is valuable to us.</p>
             
-            <div class="language-option active-lang" onclick="changeLanguageFromModal('en')">
-                <i class="fas fa-language"></i>
-                <span>English 🇺🇸</span>
-                <i class="fas fa-check check-icon"></i>
+            <div class="rating-stars" id="ratingStars">
+                <i class="fas fa-star rating-star" data-rating="1"></i>
+                <i class="fas fa-star rating-star" data-rating="2"></i>
+                <i class="fas fa-star rating-star" data-rating="3"></i>
+                <i class="fas fa-star rating-star" data-rating="4"></i>
+                <i class="fas fa-star rating-star" data-rating="5"></i>
             </div>
             
-            <div class="language-option" onclick="changeLanguageFromModal('hi')">
-                <i class="fas fa-language"></i>
-                <span>हिंदी 🇮🇳</span>
-                <i class="fas fa-check check-icon"></i>
-            </div>
+            <textarea class="feedback-input" id="feedbackText" placeholder="Tell us about your experience... (e.g., What features do you like? What can we improve?)"></textarea>
             
-            <div class="language-option" onclick="changeLanguageFromModal('ta')">
-                <i class="fas fa-language"></i>
-                <span>தமிழ் 🇮🇳</span>
-                <i class="fas fa-check check-icon"></i>
+            <input type="email" class="feedback-input" id="feedbackEmail" placeholder="Your email (optional)" style="min-height: auto;" value="hanifzayedsharif@gmail.com">
+            
+            <button class="feedback-submit" onclick="submitFeedback()" id="submitFeedbackBtn">
+                <i class="fas fa-paper-plane"></i> Send Feedback
+            </button>
+            
+            <div class="feedback-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalFeedbackCount">0</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgRating">0.0</div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="satisfactionRate">0%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Home Screen -->
     <div id="screen-home">
-        <h1>FitFuel<span style="color:var(--accent)"> Pro</span></h1>
-        <p class="tagline" id="tagline">AI-Powered Nutrition & Smart Meal Planning</p>
+        <h1 class="fade-in-up">FitFuel<span style="color:var(--accent)"> Pro</span></h1>
+        <p class="tagline fade-in-up" id="tagline" style="animation-delay: 0.1s;">AI-Powered Nutrition & Smart Meal Planning</p>
         
-        <div class="grid-options-3">
-            <div class="feature-card" onclick="showScreen('screen-cheat')">
+        <div class="grid-options-3 stagger-children">
+            <div class="feature-card zoom-in" onclick="showScreen('screen-cheat')" style="animation-delay: 0.2s;">
                 <div class="feature-icon">
                     <i class="fas fa-exchange-alt"></i>
                 </div>
@@ -1483,7 +1911,7 @@
                 </div>
             </div>
             
-            <div class="feature-card" onclick="showScreen('screen-specific')">
+            <div class="feature-card zoom-in" onclick="showScreen('screen-specific')" style="animation-delay: 0.3s;">
                 <div class="feature-icon">
                     <i class="fas fa-utensil-spoon"></i>
                 </div>
@@ -1494,7 +1922,7 @@
                 </div>
             </div>
             
-            <div class="feature-card" onclick="showScreen('screen-ai-meal')">
+            <div class="feature-card zoom-in" onclick="showScreen('screen-ai-meal')" style="animation-delay: 0.4s;">
                 <div class="feature-icon">
                     <i class="fas fa-robot"></i>
                 </div>
@@ -1506,7 +1934,7 @@
             </div>
         </div>
         
-        <div class="mode-toggle">
+        <div class="mode-toggle slide-in-left" style="animation-delay: 0.5s;">
             <button id="btn-mode-standard" class="active-mode" onclick="setMode('standard')">
                 <i class="fas fa-utensils"></i> <span id="standard-btn">Standard</span>
             </button>
@@ -1515,7 +1943,7 @@
             </button>
         </div>
 
-        <div id="standard-desc">
+        <div id="standard-desc" class="slide-in-right" style="animation-delay: 0.6s;">
             <h3><i class="fas fa-utensils"></i> <span id="standard-title">Standard Mode</span></h3>
             <p id="standard-desc-text">Full meal planning by region, goals, and targets with cost analysis.</p>
             <button class="btn-primary" onclick="showScreen('screen-region')">
@@ -1523,13 +1951,64 @@
             </button>
         </div>
 
-        <div id="pantry-desc" class="hidden">
+        <div id="pantry-desc" class="hidden slide-in-right" style="animation-delay: 0.6s;">
             <h3><i class="fas fa-egg"></i> <span id="pantry-title">Pantry Mode</span></h3>
             <p id="pantry-desc-text">Tell us what you have; we'll tell you what to make with cost-per-meal breakdown.</p>
             <input type="text" id="pantryInput" placeholder="e.g. 2 eggs, 1 onion, chicken breast, rice, spices">
             <button class="btn-primary" onclick="startPantry()">
                 <i class="fas fa-magic"></i> <span id="build-ingredients">Build from Ingredients</span>
             </button>
+        </div>
+
+        <!-- Customer Feedback Section -->
+        <div class="feedback-section zoom-in" style="animation-delay: 0.7s;">
+            <h3><i class="fas fa-star"></i> Love FitFuel Pro?</h3>
+            <p>Share your experience and help us improve! Your feedback makes a difference.</p>
+            
+            <div class="rating-stars" id="homeRatingStars">
+                <i class="fas fa-star rating-star" data-rating="1"></i>
+                <i class="fas fa-star rating-star" data-rating="2"></i>
+                <i class="fas fa-star rating-star" data-rating="3"></i>
+                <i class="fas fa-star rating-star" data-rating="4"></i>
+                <i class="fas fa-star rating-star" data-rating="5"></i>
+            </div>
+            
+            <textarea class="feedback-input" id="homeFeedbackText" placeholder="Tell us about your experience... (e.g., What features do you like? What can we improve?)" style="min-height: 80px;"></textarea>
+            
+            <button class="feedback-btn" onclick="submitHomeFeedback()">
+                <i class="fas fa-paper-plane"></i> Send Feedback
+            </button>
+        </div>
+
+        <!-- Testimonials Carousel -->
+        <div class="testimonials-carousel zoom-in" style="animation-delay: 0.8s;">
+            <h3 style="color: var(--gold); text-align: center;"><i class="fas fa-comment-dots"></i> What Our Users Say</h3>
+            <div id="testimonialsCarousel">
+                <div class="testimonial active">
+                    <p>"FitFuel Pro completely transformed my meal prep! The cheat meal converter is genius - I can enjoy my favorite foods guilt-free!"</p>
+                    <div class="testimonial-author">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Sarah Johnson</span>
+                        <span style="color: var(--gold);">★★★★★</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p>"The AI meal plans are incredibly accurate and personalized. I've lost 15 lbs in 2 months following these recipes!"</p>
+                    <div class="testimonial-author">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Mike Chen</span>
+                        <span style="color: var(--gold);">★★★★★</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <p>"As a fitness trainer, I recommend this app to all my clients. The macro tracking and cost analysis are game-changers!"</p>
+                    <div class="testimonial-author">
+                        <i class="fas fa-user-circle"></i>
+                        <span>David Martinez</span>
+                        <span style="color: var(--gold);">★★★★★</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1542,7 +2021,7 @@
             
             <h3>How It Works:</h3>
             
-            <div class="step">
+            <div class="step slide-in-left">
                 <div class="step-number">1</div>
                 <div>
                     <h4>Choose Your Mode</h4>
@@ -1551,7 +2030,7 @@
                 </div>
             </div>
             
-            <div class="step">
+            <div class="step slide-in-right" style="animation-delay: 0.1s;">
                 <div class="step-number">2</div>
                 <div>
                     <h4>Set Your Preferences</h4>
@@ -1559,7 +2038,7 @@
                 </div>
             </div>
             
-            <div class="step">
+            <div class="step slide-in-left" style="animation-delay: 0.2s;">
                 <div class="step-number">3</div>
                 <div>
                     <h4>Get AI-Generated Recipes</h4>
@@ -1574,7 +2053,7 @@
                 </div>
             </div>
             
-            <div class="step">
+            <div class="step slide-in-right" style="animation-delay: 0.3s;">
                 <div class="step-number">4</div>
                 <div>
                     <h4>Special Features</h4>
@@ -1585,7 +2064,7 @@
                 </div>
             </div>
             
-            <div class="step">
+            <div class="step slide-in-left" style="animation-delay: 0.4s;">
                 <div class="step-number">5</div>
                 <div>
                     <h4>Export & Save</h4>
@@ -1601,18 +2080,18 @@
 
     <!-- Specific Recipe Generator Screen -->
     <div id="screen-specific" class="hidden">
-        <h2><i class="fas fa-utensil-spoon"></i> <span id="specific-screen-title">Specific Recipe Generator</span></h2>
-        <p id="specific-screen-desc">Enter the name of any dish you want to make, and we'll give you a complete recipe with nutrition facts!</p>
+        <h2 class="fade-in-up"><i class="fas fa-utensil-spoon"></i> <span id="specific-screen-title">Specific Recipe Generator</span></h2>
+        <p class="fade-in-up" id="specific-screen-desc" style="animation-delay: 0.1s;">Enter the name of any dish you want to make, and we'll give you a complete recipe with nutrition facts!</p>
         
-        <div class="alert alert-info">
+        <div class="alert alert-info fade-in-up" style="animation-delay: 0.2s;">
             <i class="fas fa-info-circle"></i>
             <span id="specific-info">Examples: "Chicken Biryani", "Vegetable Lasagna", "Butter Chicken", "Chocolate Cake", "Paneer Tikka"</span>
         </div>
         
-        <input type="text" id="specificInput" placeholder="Enter dish name (e.g. 'Biryani', 'Pizza', 'Chocolate Brownies')">
+        <input type="text" id="specificInput" placeholder="Enter dish name (e.g. 'Biryani', 'Pizza', 'Chocolate Brownies')" class="fade-in-up" style="animation-delay: 0.3s;">
         
         <!-- Added Macros Target for Specific Recipe -->
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.4s;">
             <div class="toggle-label">
                 <i class="fas fa-bullseye"></i> <span id="specific-include-macros">Include Macros Target</span>
             </div>
@@ -1622,7 +2101,7 @@
             </label>
         </div>
         
-        <div id="specificMacroSettings" class="hidden">
+        <div id="specificMacroSettings" class="hidden fade-in-up" style="animation-delay: 0.5s;">
             <div class="macro-grid">
                 <input type="text" id="specificProtein" placeholder="Protein target (g)">
                 <input type="text" id="specificCalories" placeholder="Max Calories">
@@ -1631,7 +2110,7 @@
             </div>
         </div>
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.6s;">
             <div class="toggle-label">
                 <i class="fas fa-chart-line"></i> <span id="include-nutrition">Include Nutrition Facts</span>
             </div>
@@ -1641,7 +2120,7 @@
             </label>
         </div>
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.7s;">
             <div class="toggle-label">
                 <i class="fas fa-rupee-sign"></i> <span id="include-cost">Include Cost Analysis</span>
             </div>
@@ -1651,23 +2130,23 @@
             </label>
         </div>
         
-        <button class="btn-primary" onclick="generateSpecificRecipe()" id="generateSpecificBtn">
+        <button class="btn-primary fade-in-up" onclick="generateSpecificRecipe()" id="generateSpecificBtn" style="animation-delay: 0.8s;">
             <i class="fas fa-utensils"></i> <span id="generate-recipe">Generate Complete Recipe</span>
         </button>
         
-        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;" class="fade-in-up" style="animation-delay: 0.9s;">
             <i class="fas fa-arrow-left"></i> <span id="back-home">Back to Home</span>
         </button>
     </div>
 
     <!-- Cheat Meal Converter Screen -->
     <div id="screen-cheat" class="hidden">
-        <h2><i class="fas fa-exchange-alt"></i> <span id="cheat-screen-title">Cheat Meal Converter</span></h2>
-        <p id="cheat-screen-desc">Craving something indulgent? We'll transform it into a healthier, protein-packed version!</p>
+        <h2 class="fade-in-up"><i class="fas fa-exchange-alt"></i> <span id="cheat-screen-title">Cheat Meal Converter</span></h2>
+        <p class="fade-in-up" id="cheat-screen-desc" style="animation-delay: 0.1s;">Craving something indulgent? We'll transform it into a healthier, protein-packed version!</p>
         
-        <input type="text" id="cheatInput" placeholder="Describe your craving (e.g. 'Butter chicken pizza', 'Chocolate brownie', 'Biryani')">
+        <input type="text" id="cheatInput" placeholder="Describe your craving (e.g. 'Butter chicken pizza', 'Chocolate brownie', 'Biryani')" class="fade-in-up" style="animation-delay: 0.2s;">
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.3s;">
             <div class="toggle-label">
                 <i class="fas fa-bullseye"></i> <span id="include-macros">Include Macros Target</span>
             </div>
@@ -1677,7 +2156,7 @@
             </label>
         </div>
         
-        <div id="cheatMacroSettings" class="hidden">
+        <div id="cheatMacroSettings" class="hidden fade-in-up" style="animation-delay: 0.4s;">
             <div class="macro-grid">
                 <input type="text" id="cheatProtein" placeholder="Protein target (g)">
                 <input type="text" id="cheatCalories" placeholder="Max Calories">
@@ -1686,25 +2165,25 @@
             </div>
         </div>
         
-        <button class="btn-primary" onclick="generateCheatMeal()" id="generateCheatBtn">
+        <button class="btn-primary fade-in-up" onclick="generateCheatMeal()" id="generateCheatBtn" style="animation-delay: 0.5s;">
             <i class="fas fa-wand-magic-sparkles"></i> <span id="convert-button">Convert to Healthy Version</span>
         </button>
-        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;" class="fade-in-up" style="animation-delay: 0.6s;">
             <i class="fas fa-arrow-left"></i> <span id="back-home2">Back to Home</span>
         </button>
     </div>
 
     <!-- AI Meal Plan Screen -->
     <div id="screen-ai-meal" class="hidden">
-        <h2><i class="fas fa-robot"></i> <span id="ai-meal-screen-title">AI Meal Plan</span></h2>
-        <p id="ai-meal-screen-desc">Get personalized meal plans based on your dietary preferences and goals.</p>
+        <h2 class="fade-in-up"><i class="fas fa-robot"></i> <span id="ai-meal-screen-title">AI Meal Plan</span></h2>
+        <p class="fade-in-up" id="ai-meal-screen-desc" style="animation-delay: 0.1s;">Get personalized meal plans based on your dietary preferences and goals.</p>
         
-        <div class="alert alert-info">
+        <div class="alert alert-info fade-in-up" style="animation-delay: 0.2s;">
             <i class="fas fa-lightbulb"></i>
             <span id="ai-meal-info">Select your preferences below to generate a complete meal plan</span>
         </div>
         
-        <select id="dietPreference">
+        <select id="dietPreference" class="fade-in-up" style="animation-delay: 0.3s;">
             <option value="">Select Diet Preference</option>
             <option value="Vegetarian">Vegetarian</option>
             <option value="Non-Vegetarian">Non-Vegetarian</option>
@@ -1713,7 +2192,7 @@
             <option value="Gluten-Free">Gluten-Free</option>
         </select>
         
-        <select id="mealPlanType">
+        <select id="mealPlanType" class="fade-in-up" style="animation-delay: 0.4s;">
             <option value="">Select Meal Plan Type</option>
             <option value="Weight Loss">Weight Loss</option>
             <option value="Muscle Gain">Muscle Gain</option>
@@ -1722,12 +2201,12 @@
             <option value="General Health">General Health</option>
         </select>
         
-        <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3" onchange="validateDays(this)">
+        <input type="number" id="mealPlanDays" placeholder="Number of days (1-7)" min="1" max="7" value="3" onchange="validateDays(this)" class="fade-in-up" style="animation-delay: 0.5s;">
         
         <!-- Day-wise Macro Settings -->
-        <div id="dayMacroSettings"></div>
+        <div id="dayMacroSettings" class="fade-in-up" style="animation-delay: 0.6s;"></div>
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.7s;">
             <div class="toggle-label">
                 <i class="fas fa-rupee-sign"></i> <span id="include-shopping">Include Shopping List</span>
             </div>
@@ -1737,62 +2216,62 @@
             </label>
         </div>
         
-        <button class="btn-primary" onclick="generateMealPlan()" id="generateMealPlanBtn">
+        <button class="btn-primary fade-in-up" onclick="generateMealPlan()" id="generateMealPlanBtn" style="animation-delay: 0.8s;">
             <i class="fas fa-calendar-alt"></i> <span id="generate-plan-btn">Generate Meal Plan</span>
         </button>
         
-        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;">
+        <button onclick="showScreen('screen-home')" style="margin-top: 15px; width: 100%;" class="fade-in-up" style="animation-delay: 0.9s;">
             <i class="fas fa-arrow-left"></i> <span id="back-home3">Back to Home</span>
         </button>
     </div>
 
     <!-- Region Selection -->
     <div id="screen-region" class="hidden">
-        <h2><i class="fas fa-globe-asia"></i> <span id="choose-cuisine">Choose Cuisine</span></h2>
-        <div class="grid-options">
-            <button onclick="save('region', 'North Indian', 'screen-meal')"><i class="fas fa-utensils"></i> North Indian 🍛</button>
-            <button onclick="save('region', 'South Indian', 'screen-meal')"><i class="fas fa-leaf"></i> South Indian 🥥</button>
-            <button onclick="save('region', 'Global/Western', 'screen-meal')"><i class="fas fa-hamburger"></i> Global/Western 🍔</button>
-            <button onclick="save('region', 'Mediterranean', 'screen-meal')"><i class="fas fa-seedling"></i> Mediterranean 🥗</button>
+        <h2 class="fade-in-up"><i class="fas fa-globe-asia"></i> <span id="choose-cuisine">Choose Cuisine</span></h2>
+        <div class="grid-options stagger-children">
+            <button onclick="save('region', 'North Indian', 'screen-meal')" class="zoom-in" style="animation-delay: 0.2s;"><i class="fas fa-utensils"></i> North Indian 🍛</button>
+            <button onclick="save('region', 'South Indian', 'screen-meal')" class="zoom-in" style="animation-delay: 0.3s;"><i class="fas fa-leaf"></i> South Indian 🥥</button>
+            <button onclick="save('region', 'Global/Western', 'screen-meal')" class="zoom-in" style="animation-delay: 0.4s;"><i class="fas fa-hamburger"></i> Global/Western 🍔</button>
+            <button onclick="save('region', 'Mediterranean', 'screen-meal')" class="zoom-in" style="animation-delay: 0.5s;"><i class="fas fa-seedling"></i> Mediterranean 🥗</button>
         </div>
     </div>
 
     <!-- Meal Type -->
     <div id="screen-meal" class="hidden">
-        <h2><i class="fas fa-concierge-bell"></i> <span id="meal-type">Meal Type</span></h2>
-        <div class="grid-options">
-            <button onclick="save('meal', 'Breakfast', 'screen-goal')"><i class="fas fa-sun"></i> <span id="breakfast">Breakfast</span></button>
-            <button onclick="save('meal', 'Lunch', 'screen-goal')"><i class="fas fa-sun"></i> <span id="lunch">Lunch</span></button>
-            <button onclick="save('meal', 'Dinner', 'screen-goal')"><i class="fas fa-moon"></i> <span id="dinner">Dinner</span></button>
-            <button onclick="save('meal', 'Snack', 'screen-goal')"><i class="fas fa-apple-alt"></i> <span id="snack">Snack</span></button>
+        <h2 class="fade-in-up"><i class="fas fa-concierge-bell"></i> <span id="meal-type">Meal Type</span></h2>
+        <div class="grid-options stagger-children">
+            <button onclick="save('meal', 'Breakfast', 'screen-goal')" class="zoom-in" style="animation-delay: 0.2s;"><i class="fas fa-sun"></i> <span id="breakfast">Breakfast</span></button>
+            <button onclick="save('meal', 'Lunch', 'screen-goal')" class="zoom-in" style="animation-delay: 0.3s;"><i class="fas fa-sun"></i> <span id="lunch">Lunch</span></button>
+            <button onclick="save('meal', 'Dinner', 'screen-goal')" class="zoom-in" style="animation-delay: 0.4s;"><i class="fas fa-moon"></i> <span id="dinner">Dinner</span></button>
+            <button onclick="save('meal', 'Snack', 'screen-goal')" class="zoom-in" style="animation-delay: 0.5s;"><i class="fas fa-apple-alt"></i> <span id="snack">Snack</span></button>
         </div>
     </div>
 
     <!-- Goal Selection - Modified to skip for pantry mode -->
     <div id="screen-goal" class="hidden">
-        <h2><i class="fas fa-bullseye"></i> <span id="fitness-goal">Fitness Goal</span></h2>
-        <div class="grid-options">
-            <button onclick="save('goal', 'Fat Loss', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-fire"></i> 🔥 <span id="fat-loss">Fat Loss</span></button>
-            <button onclick="save('goal', 'Muscle Building', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-dumbbell"></i> 💪 <span id="muscle-gain">Muscle Gain</span></button>
-            <button onclick="save('goal', 'Maintenance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-balance-scale"></i> ⚖️ <span id="maintenance">Maintenance</span></button>
-            <button onclick="save('goal', 'Endurance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')"><i class="fas fa-running"></i> 🏃 <span id="endurance">Endurance</span></button>
+        <h2 class="fade-in-up"><i class="fas fa-bullseye"></i> <span id="fitness-goal">Fitness Goal</span></h2>
+        <div class="grid-options stagger-children">
+            <button onclick="save('goal', 'Fat Loss', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')" class="zoom-in" style="animation-delay: 0.2s;"><i class="fas fa-fire"></i> 🔥 <span id="fat-loss">Fat Loss</span></button>
+            <button onclick="save('goal', 'Muscle Building', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')" class="zoom-in" style="animation-delay: 0.3s;"><i class="fas fa-dumbbell"></i> 💪 <span id="muscle-gain">Muscle Gain</span></button>
+            <button onclick="save('goal', 'Maintenance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')" class="zoom-in" style="animation-delay: 0.4s;"><i class="fas fa-balance-scale"></i> ⚖️ <span id="maintenance">Maintenance</span></button>
+            <button onclick="save('goal', 'Endurance', choices.mode === 'pantry' ? 'screen-pro-limits-pantry' : 'screen-pro-limits')" class="zoom-in" style="animation-delay: 0.5s;"><i class="fas fa-running"></i> 🏃 <span id="endurance">Endurance</span></button>
         </div>
     </div>
 
     <!-- Macro Targets for Standard Mode -->
     <div id="screen-pro-limits" class="hidden">
-        <h2><i class="fas fa-chart-line"></i> <span id="macro-targets">Macro Targets</span></h2>
-        <p id="macro-desc">Enter your targets - AI will strictly follow these numbers!</p>
+        <h2 class="fade-in-up"><i class="fas fa-chart-line"></i> <span id="macro-targets">Macro Targets</span></h2>
+        <p class="fade-in-up" id="macro-desc" style="animation-delay: 0.1s;">Enter your targets - AI will strictly follow these numbers!</p>
         
-        <input type="text" id="proCal" placeholder="Max Calories (e.g. 600)">
-        <div class="macro-grid">
+        <input type="text" id="proCal" placeholder="Max Calories (e.g. 600)" class="fade-in-up" style="animation-delay: 0.2s;">
+        <div class="macro-grid fade-in-up" style="animation-delay: 0.3s;">
             <input type="text" id="proProtein" placeholder="Protein (g) - e.g. 80">
             <input type="text" id="proCarbs" placeholder="Carbs (g) - e.g. 50">
             <input type="text" id="proFiber" placeholder="Fiber (g) - e.g. 15">
             <input type="text" id="proBudget" placeholder="Budget (₹/$) - e.g. 200">
         </div>
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.4s;">
             <div class="toggle-label">
                 <i class="fas fa-shopping-cart"></i> <span id="show-cost">Show Cost Breakdown</span>
             </div>
@@ -1802,17 +2281,17 @@
             </label>
         </div>
         
-        <button class="btn-primary" onclick="finalizePro()">
+        <button class="btn-primary fade-in-up" onclick="finalizePro()" style="animation-delay: 0.5s;">
             <i class="fas fa-brain"></i> <span id="generate-plan">Generate Pro Plan</span>
         </button>
     </div>
 
     <!-- Macro Targets for Pantry Mode (Simplified - No Goal/Macros) -->
     <div id="screen-pro-limits-pantry" class="hidden">
-        <h2><i class="fas fa-egg"></i> <span id="pantry-macro-title">Pantry Recipe Generator</span></h2>
-        <p id="pantry-macro-desc">We'll create a delicious recipe using your ingredients!</p>
+        <h2 class="fade-in-up"><i class="fas fa-egg"></i> <span id="pantry-macro-title">Pantry Recipe Generator</span></h2>
+        <p class="fade-in-up" id="pantry-macro-desc" style="animation-delay: 0.1s;">We'll create a delicious recipe using your ingredients!</p>
         
-        <div class="toggle-container">
+        <div class="toggle-container fade-in-up" style="animation-delay: 0.2s;">
             <div class="toggle-label">
                 <i class="fas fa-shopping-cart"></i> <span id="show-cost-pantry">Show Cost Breakdown</span>
             </div>
@@ -1822,7 +2301,7 @@
             </label>
         </div>
         
-        <button class="btn-primary" onclick="finalizePantry()">
+        <button class="btn-primary fade-in-up" onclick="finalizePantry()" style="animation-delay: 0.3s;">
             <i class="fas fa-magic"></i> <span id="generate-pantry-plan">Generate Pantry Recipe</span>
         </button>
     </div>
@@ -2000,6 +2479,7 @@
 <script>
     // YouTube API Key (can stay client-side)
     const YOUTUBE_API_KEY = "AIzaSyB6dd8Qy63f8-an8gaFB30r7MevN9I7LOo";
+    const FEEDBACK_EMAIL = "hanifzayedsharif@gmail.com";
 
     let choices = { mode: 'standard', showCostBreakdown: true };
     
@@ -2009,6 +2489,12 @@
     let loadingInterval;
     let tipInterval;
     let liveUpdateInterval;
+    
+    // Feedback storage
+    let feedbacks = JSON.parse(localStorage.getItem('fitfuelFeedbacks')) || [];
+    
+    // Scroll Progress
+    let scrollProgress = document.getElementById('scrollProgress');
     
     // Language translations
     const translations = {
@@ -2325,10 +2811,27 @@
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('error-container')?.classList.add('hidden');
         
+        // Scroll to top with smooth animation
+        const container = document.getElementById('app-container');
+        container.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+        
+        // Apply entrance animations to new screen
+        const elements = document.querySelectorAll(`#${id} > *`);
+        elements.forEach((el, index) => {
+            el.classList.add('fade-in-up');
+            el.style.animationDelay = `${index * 0.1}s`;
+        });
+        
         // Generate day macro settings when AI Meal Plan screen is shown
         if (id === 'screen-ai-meal') {
             generateDayMacroSettings();
         }
+        
+        // Update feedback stats
+        updateFeedbackStats();
     }
 
     function generateDayMacroSettings() {
@@ -2338,7 +2841,7 @@
         
         for (let i = 1; i <= days; i++) {
             html += `
-                <div class="day-macro-settings">
+                <div class="day-macro-settings fade-in-up" style="animation-delay: ${i * 0.1}s">
                     <div class="day-header" onclick="toggleDay(${i})">
                         <h4><i class="fas fa-calendar-day"></i> Day ${i}</h4>
                         <i class="fas fa-chevron-down" id="chevron-${i}"></i>
@@ -2360,7 +2863,7 @@
     function toggleDay(day) {
         const content = document.getElementById(`day-${day}-content`);
         const chevron = document.getElementById(`chevron-${day}`);
-        if (content.style.display === 'none') {
+        if (content.style.display === 'none' || getComputedStyle(content).display === 'none') {
             content.style.display = 'block';
             chevron.className = 'fas fa-chevron-up';
         } else {
@@ -2433,6 +2936,16 @@
 
     function hideAbout() {
         document.getElementById('about-modal').classList.add('hidden');
+    }
+
+    // Feedback modal functions
+    function showFeedbackModal() {
+        document.getElementById('feedback-modal').classList.remove('hidden');
+        updateFeedbackStats();
+    }
+
+    function hideFeedbackModal() {
+        document.getElementById('feedback-modal').classList.add('hidden');
     }
 
     // Update live feed steps
@@ -3605,9 +4118,243 @@
         }, 2000);
     }
 
+    // Feedback Functions
+    function initRatingStars() {
+        const stars = document.querySelectorAll('.rating-star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.dataset.rating;
+                stars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < rating; i++) {
+                    stars[i].classList.add('active');
+                }
+            });
+            
+            star.addEventListener('mouseover', function() {
+                const rating = this.dataset.rating;
+                stars.forEach(s => s.style.color = 'rgba(255,215,0,0.3)');
+                for (let i = 0; i < rating; i++) {
+                    stars[i].style.color = 'var(--gold)';
+                }
+            });
+            
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => {
+                    s.style.color = s.classList.contains('active') ? 'var(--gold)' : 'rgba(255,215,0,0.3)';
+                });
+            });
+        });
+    }
+
+    function submitFeedback() {
+        const stars = document.querySelectorAll('#ratingStars .rating-star');
+        let rating = 0;
+        stars.forEach((star, index) => {
+            if (star.classList.contains('active')) {
+                rating = index + 1;
+            }
+        });
+        
+        const feedbackText = document.getElementById('feedbackText').value;
+        const email = document.getElementById('feedbackEmail').value;
+        
+        if (rating === 0) {
+            alert("Please select a rating!");
+            return;
+        }
+        
+        if (!feedbackText.trim()) {
+            alert("Please enter your feedback!");
+            return;
+        }
+        
+        const feedback = {
+            rating: rating,
+            text: feedbackText,
+            email: email || "anonymous",
+            date: new Date().toISOString()
+        };
+        
+        feedbacks.push(feedback);
+        localStorage.setItem('fitfuelFeedbacks', JSON.stringify(feedbacks));
+        
+        // Send to email (simulate - in production, this would be a server-side call)
+        sendFeedbackToEmail(feedback);
+        
+        showFeedbackSuccess();
+        updateFeedbackStats();
+        
+        // Clear form
+        document.getElementById('feedbackText').value = '';
+        stars.forEach(s => s.classList.remove('active'));
+        
+        // Add testimonial
+        addTestimonial(feedback);
+    }
+
+    function submitHomeFeedback() {
+        const stars = document.querySelectorAll('#homeRatingStars .rating-star');
+        let rating = 0;
+        stars.forEach((star, index) => {
+            if (star.classList.contains('active')) {
+                rating = index + 1;
+            }
+        });
+        
+        const feedbackText = document.getElementById('homeFeedbackText').value;
+        
+        if (rating === 0) {
+            alert("Please select a rating!");
+            return;
+        }
+        
+        if (!feedbackText.trim()) {
+            alert("Please enter your feedback!");
+            return;
+        }
+        
+        const feedback = {
+            rating: rating,
+            text: feedbackText,
+            email: "hanifzayedsharif@gmail.com",
+            date: new Date().toISOString()
+        };
+        
+        feedbacks.push(feedback);
+        localStorage.setItem('fitfuelFeedbacks', JSON.stringify(feedbacks));
+        
+        // Send to email
+        sendFeedbackToEmail(feedback);
+        
+        alert("Thank you for your feedback!");
+        
+        // Clear form
+        document.getElementById('homeFeedbackText').value = '';
+        stars.forEach(s => s.classList.remove('active'));
+        
+        // Add testimonial
+        addTestimonial(feedback);
+    }
+
+    function sendFeedbackToEmail(feedback) {
+        // In a production environment, this would be a server-side call
+        // For now, we'll simulate sending an email
+        console.log("Sending feedback to:", FEEDBACK_EMAIL);
+        console.log("Feedback:", feedback);
+        
+        // You can create a mailto link as a simple fallback
+        const subject = `FitFuel Pro Feedback - Rating: ${feedback.rating} Stars`;
+        const body = `Rating: ${feedback.rating} Stars\n\nFeedback: ${feedback.text}\n\nDate: ${new Date(feedback.date).toLocaleString()}\nEmail: ${feedback.email}`;
+        const mailtoLink = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // Optionally open mail client
+        // window.location.href = mailtoLink;
+    }
+
+    function showFeedbackSuccess() {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'feedback-success';
+        successDiv.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <h3>Thank You!</h3>
+            <p>Your feedback has been sent successfully!</p>
+        `;
+        
+        const modalContent = document.querySelector('.feedback-content');
+        modalContent.insertBefore(successDiv, modalContent.querySelector('.feedback-stats'));
+        
+        setTimeout(() => {
+            successDiv.remove();
+            hideFeedbackModal();
+        }, 3000);
+    }
+
+    function updateFeedbackStats() {
+        const total = feedbacks.length;
+        document.getElementById('totalFeedbackCount').textContent = total;
+        
+        if (total > 0) {
+            const avgRating = feedbacks.reduce((sum, f) => sum + f.rating, 0) / total;
+            document.getElementById('avgRating').textContent = avgRating.toFixed(1);
+            
+            const satisfaction = (feedbacks.filter(f => f.rating >= 4).length / total) * 100;
+            document.getElementById('satisfactionRate').textContent = Math.round(satisfaction) + '%';
+        } else {
+            document.getElementById('avgRating').textContent = '0.0';
+            document.getElementById('satisfactionRate').textContent = '0%';
+        }
+    }
+
+    function addTestimonial(feedback) {
+        if (feedback.rating >= 4 && feedback.text.length > 20) {
+            const testimonialDiv = document.createElement('div');
+            testimonialDiv.className = 'testimonial';
+            testimonialDiv.innerHTML = `
+                <p>"${feedback.text.substring(0, 100)}${feedback.text.length > 100 ? '...' : ''}"</p>
+                <div class="testimonial-author">
+                    <i class="fas fa-user-circle"></i>
+                    <span>${feedback.email === 'hanifzayedsharif@gmail.com' ? 'FitFuel User' : feedback.email.split('@')[0]}</span>
+                    <span style="color: var(--gold);">${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}</span>
+                </div>
+            `;
+            
+            const carousel = document.getElementById('testimonialsCarousel');
+            carousel.appendChild(testimonialDiv);
+            
+            // Start carousel rotation if more than one testimonial
+            if (carousel.children.length > 1) {
+                startTestimonialCarousel();
+            }
+        }
+    }
+
+    function startTestimonialCarousel() {
+        const testimonials = document.querySelectorAll('.testimonial');
+        let currentIndex = 0;
+        
+        setInterval(() => {
+            testimonials.forEach(t => t.classList.remove('active'));
+            currentIndex = (currentIndex + 1) % testimonials.length;
+            testimonials[currentIndex].classList.add('active');
+        }, 5000);
+    }
+
+    // Scroll Progress Indicator
+    function initScrollProgress() {
+        const container = document.getElementById('app-container');
+        const progress = document.getElementById('scrollProgress');
+        
+        container.addEventListener('scroll', () => {
+            const scrollTop = container.scrollTop;
+            const scrollHeight = container.scrollHeight - container.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            progress.style.width = scrollPercent + '%';
+            progress.style.display = scrollPercent > 0 ? 'block' : 'none';
+        });
+    }
+
+    // Intersection Observer for scroll animations
+    function initScrollReveal() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+    }
+
     // Initialize application
     document.addEventListener('DOMContentLoaded', function() {
         changeLanguage('en');
+        initRatingStars();
+        initScrollProgress();
+        initScrollReveal();
+        updateFeedbackStats();
         
         document.getElementById('about-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
@@ -3618,6 +4365,12 @@
         document.getElementById('language-modal')?.addEventListener('click', function(e) {
             if (e.target === this) {
                 hideLanguageModal();
+            }
+        });
+        
+        document.getElementById('feedback-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideFeedbackModal();
             }
         });
         
@@ -3651,9 +4404,35 @@
             });
         }
         
+        // Initialize home screen rating stars
+        const homeStars = document.querySelectorAll('#homeRatingStars .rating-star');
+        homeStars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.dataset.rating;
+                homeStars.forEach(s => s.classList.remove('active'));
+                for (let i = 0; i < rating; i++) {
+                    homeStars[i].classList.add('active');
+                }
+            });
+            
+            star.addEventListener('mouseover', function() {
+                const rating = this.dataset.rating;
+                homeStars.forEach(s => s.style.color = 'rgba(255,215,0,0.3)');
+                for (let i = 0; i < rating; i++) {
+                    homeStars[i].style.color = 'var(--gold)';
+                }
+            });
+            
+            star.addEventListener('mouseout', function() {
+                homeStars.forEach(s => {
+                    s.style.color = s.classList.contains('active') ? 'var(--gold)' : 'rgba(255,215,0,0.3)';
+                });
+            });
+        });
+        
         showScreen('screen-home');
         
-        console.log('FitFuel Pro initialized successfully');
+        console.log('FitFuel Pro initialized successfully with enhanced animations and feedback system');
     });
 </script>
 </body>
