@@ -34,6 +34,8 @@
         html {
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
@@ -45,12 +47,13 @@
             flex-direction: column;
             align-items: center;
             padding: 10px;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             background-image: 
                 radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 20%),
                 radial-gradient(circle at 80% 20%, rgba(113, 88, 226, 0.05) 0%, transparent 20%);
             width: 100%;
-            overflow-x: hidden;
+            position: relative;
         }
 
         /* Fixed Header - Always Visible Outside Container */
@@ -65,6 +68,7 @@
             margin-bottom: 10px;
             z-index: 1000;
             position: relative;
+            flex-shrink: 0;
         }
 
         .settings-btn {
@@ -124,10 +128,18 @@
             max-width: min(800px, 95vw);
             background: transparent;
             backdrop-filter: blur(25px);
-            padding: clamp(20px, 5vw, 40px);
+            padding: clamp(10px, 3vw, 20px);
             position: relative;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             margin: 0 auto;
+            flex: 1;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        #app-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         .hidden { display: none !important; }
@@ -594,6 +606,7 @@
             color: var(--accent);
         }
 
+        /* Enhanced Loader with Live Updates */
         .modern-loader {
             display: flex;
             flex-direction: column;
@@ -743,6 +756,99 @@
         .loader-dot:nth-child(2) { animation-delay: -0.16s; }
         .loader-dot:nth-child(3) { animation-delay: 0s; }
 
+        /* Live Generation Feed */
+        .live-generation-feed {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .live-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .live-step.active {
+            border-left-color: var(--accent);
+            background: rgba(0,255,136,0.05);
+            transform: translateX(5px);
+        }
+
+        .live-step.completed {
+            border-left-color: var(--accent);
+            opacity: 0.7;
+        }
+
+        .live-step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dim);
+        }
+
+        .live-step.active .live-step-icon {
+            background: var(--accent);
+            color: #000;
+            animation: pulse 1s infinite;
+        }
+
+        .live-step.completed .live-step-icon {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .live-step-content {
+            flex: 1;
+        }
+
+        .live-step-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .live-step-desc {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .live-step-status {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .live-step.active .live-step-status i {
+            animation: spin 1s linear infinite;
+            color: var(--accent);
+        }
+
+        .live-step.completed .live-step-status i {
+            color: var(--accent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         .loader-tip {
             margin-top: 30px;
             padding: 15px 25px;
@@ -821,159 +927,8 @@
             transform: scale(0.95);
         }
 
-        /* Enhanced Language Modal */
-        .language-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .language-modal-content {
-            background: linear-gradient(135deg, #1a1a1f 0%, #121214 100%);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 32px;
-            padding: clamp(30px, 6vw, 40px);
-            max-width: 450px;
-            width: 100%;
-            position: relative;
-            box-shadow: 0 30px 60px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,136,0.1) inset;
-            animation: modalSlideUp 0.3s ease-out;
-        }
-
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .language-modal-content h2 {
-            color: var(--accent);
-            margin: 0 0 25px 0;
-            text-align: center;
-            font-size: clamp(1.6rem, 5vw, 2rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        .language-modal-content h2 i {
-            color: var(--accent);
-            font-size: 1.8rem;
-        }
-
-        .language-option {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            padding: 16px 24px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .language-option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(113,88,226,0.1));
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .language-option:hover {
-            border-color: var(--accent);
-            transform: translateX(8px);
-            background: rgba(255,255,255,0.04);
-        }
-
-        .language-option:hover::before {
-            opacity: 1;
-        }
-
-        .language-option.active-lang {
-            background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(113,88,226,0.15));
-            border-color: var(--accent);
-            box-shadow: 0 0 30px rgba(0,255,136,0.2);
-        }
-
-        .language-option i:first-child {
-            font-size: clamp(1.3rem, 4vw, 1.6rem);
-            color: var(--accent);
-            position: relative;
-            z-index: 1;
-        }
-
-        .language-option span {
-            flex: 1;
-            position: relative;
-            z-index: 1;
-        }
-
-        .language-option .check-icon {
-            color: var(--accent);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 1.3rem;
-        }
-
-        .language-option.active-lang .check-icon {
-            opacity: 1;
-        }
-
-        .close-modal-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-dim);
-            font-size: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s;
-            padding: 0;
-            min-height: auto;
-        }
-
-        .close-modal-btn:hover {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            transform: rotate(90deg);
-        }
-
-        /* Enhanced About Modal */
+        /* Fixed Modals - Always centered */
+        .language-modal,
         .about-modal {
             position: fixed;
             top: 0;
@@ -989,36 +944,38 @@
             padding: 20px;
         }
 
+        .language-modal-content,
         .about-content {
             background: linear-gradient(135deg, #1a1a1f 0%, #121214 100%);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 32px;
             padding: clamp(25px, 5vw, 40px);
-            max-width: 650px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
+            max-width: 450px;
             width: 100%;
+            position: relative;
             box-shadow: 0 30px 60px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,136,0.1) inset;
             animation: modalSlideUp 0.3s ease-out;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: auto;
         }
 
-        .about-content::-webkit-scrollbar {
-            width: 8px;
+        .about-content {
+            max-width: 650px;
         }
 
-        .about-content::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .about-content::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
+        .close-modal-btn,
         .close-modal {
             position: absolute;
             top: 16px;
@@ -1039,11 +996,55 @@
             min-height: auto;
         }
 
+        .close-modal-btn:hover,
         .close-modal:hover {
             background: var(--accent);
             color: #000;
             border-color: var(--accent);
             transform: rotate(90deg);
+        }
+
+        /* Language Options with better active state */
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 16px 24px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.02);
+            border: 2px solid rgba(255,255,255,0.05);
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .language-option.active-lang {
+            background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(113,88,226,0.2));
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(0,255,136,0.3);
+        }
+
+        .language-option.active-lang .check-icon {
+            color: var(--accent);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .check-icon {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            margin-left: auto;
+            font-size: 1.3rem;
+        }
+
+        .language-option i:first-child {
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
+            color: var(--accent);
         }
 
         .step {
@@ -1844,6 +1845,51 @@
                 <p id="loader-message" style="color: var(--text-dim); max-width: 300px; text-align: center;">
                     Analyzing ingredients, calculating nutrition, and optimizing for your goals...
                 </p>
+                
+                <!-- Live Generation Feed -->
+                <div class="live-generation-feed" id="live-feed">
+                    <div class="live-step active" id="step1">
+                        <div class="live-step-icon"><i class="fas fa-search"></i></div>
+                        <div class="live-step-content">
+                            <div class="live-step-title">Analyzing Request</div>
+                            <div class="live-step-desc">Understanding your preferences and goals</div>
+                        </div>
+                        <div class="live-step-status"><i class="fas fa-spinner fa-pulse"></i></div>
+                    </div>
+                    <div class="live-step" id="step2">
+                        <div class="live-step-icon"><i class="fas fa-egg"></i></div>
+                        <div class="live-step-content">
+                            <div class="live-step-title">Gathering Ingredients</div>
+                            <div class="live-step-desc">Selecting fresh, nutritious components</div>
+                        </div>
+                        <div class="live-step-status"></div>
+                    </div>
+                    <div class="live-step" id="step3">
+                        <div class="live-step-icon"><i class="fas fa-calculator"></i></div>
+                        <div class="live-step-content">
+                            <div class="live-step-title">Calculating Nutrition</div>
+                            <div class="live-step-desc">Optimizing macros for your goals</div>
+                        </div>
+                        <div class="live-step-status"></div>
+                    </div>
+                    <div class="live-step" id="step4">
+                        <div class="live-step-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="live-step-content">
+                            <div class="live-step-title">Estimating Costs</div>
+                            <div class="live-step-desc">Calculating market prices</div>
+                        </div>
+                        <div class="live-step-status"></div>
+                    </div>
+                    <div class="live-step" id="step5">
+                        <div class="live-step-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="live-step-content">
+                            <div class="live-step-title">Creating Recipe</div>
+                            <div class="live-step-desc">Crafting step-by-step instructions</div>
+                        </div>
+                        <div class="live-step-status"></div>
+                    </div>
+                </div>
+                
                 <div class="loader-dots">
                     <div class="loader-dot"></div>
                     <div class="loader-dot"></div>
@@ -1962,6 +2008,7 @@
     let currentGenerationType = null;
     let loadingInterval;
     let tipInterval;
+    let liveUpdateInterval;
     
     // Language translations
     const translations = {
@@ -2388,6 +2435,38 @@
         document.getElementById('about-modal').classList.add('hidden');
     }
 
+    // Update live feed steps
+    function updateLiveStep(stepNumber, status) {
+        const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+        
+        // Reset all steps
+        steps.forEach((stepId, index) => {
+            const step = document.getElementById(stepId);
+            if (step) {
+                step.classList.remove('active', 'completed');
+                step.querySelector('.live-step-status').innerHTML = '';
+            }
+        });
+        
+        // Mark completed steps
+        for (let i = 0; i < stepNumber - 1; i++) {
+            const step = document.getElementById(steps[i]);
+            if (step) {
+                step.classList.add('completed');
+                step.querySelector('.live-step-status').innerHTML = '<i class="fas fa-check"></i>';
+            }
+        }
+        
+        // Mark current step as active
+        if (stepNumber <= steps.length) {
+            const currentStep = document.getElementById(steps[stepNumber - 1]);
+            if (currentStep) {
+                currentStep.classList.add('active');
+                currentStep.querySelector('.live-step-status').innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
+            }
+        }
+    }
+
     // Show attractive loader with progress
     function showLoader(type = 'standard') {
         document.getElementById('loader').classList.remove('hidden');
@@ -2427,14 +2506,26 @@
         if (loadingInterval) clearInterval(loadingInterval);
         
         loadingInterval = setInterval(() => {
-            progress += Math.random() * 5;
+            progress += Math.random() * 3;
             if (progress >= 90) {
                 progress = 90;
-                clearInterval(loadingInterval);
             }
             progressBar.style.width = progress + '%';
             percentageText.textContent = Math.round(progress) + '%';
-        }, 300);
+            
+            // Update live steps based on progress
+            if (progress < 20) {
+                updateLiveStep(1, 'active');
+            } else if (progress < 40) {
+                updateLiveStep(2, 'active');
+            } else if (progress < 60) {
+                updateLiveStep(3, 'active');
+            } else if (progress < 80) {
+                updateLiveStep(4, 'active');
+            } else {
+                updateLiveStep(5, 'active');
+            }
+        }, 400);
         
         startTipCarousel();
     }
@@ -2574,6 +2665,7 @@
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
+            updateLiveStep(5, 'completed');
             
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
@@ -2698,6 +2790,7 @@
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
+            updateLiveStep(5, 'completed');
             
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
@@ -2839,6 +2932,7 @@
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
+            updateLiveStep(5, 'completed');
             
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
@@ -3013,6 +3107,7 @@
             if (loadingInterval) clearInterval(loadingInterval);
             document.getElementById('loader-progress').style.width = '100%';
             document.getElementById('loader-percentage').textContent = '100%';
+            updateLiveStep(5, 'completed');
             
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
