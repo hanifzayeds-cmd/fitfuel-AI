@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       headers: {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': req.headers.origin || 'https://fitfuel-pro.vercel.app',
+        'HTTP-Referer': req.headers.origin || 'https://fitfuel-ai.vercel.app/',
         'X-Title': 'FitFuel Pro'
       },
       body: JSON.stringify({
