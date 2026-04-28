@@ -23,8 +23,9 @@ export default async function handler(req, res) {
     }
     
     console.log('🔵 Proxying request to OpenRouter...');
+    console.log('Using API Key:', process.env.OPENROUTER_API_KEY ? 'Present' : 'Missing');
     
-    // Make request to OpenRouter
+    // Make request to OpenRouter - Updated endpoint
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -34,7 +35,7 @@ export default async function handler(req, res) {
         'X-Title': 'FitFuel Pro'
       },
       body: JSON.stringify({
-        model: model || 'stepfun/step-3.5-flash:free',
+        model: model || 'stepfun/step-3.5-flash:free', // Or try: 'google/gemini-2.0-flash-exp:free'
         messages: [{ role: 'user', content: prompt }],
         temperature: temperature || 0.3
       })
