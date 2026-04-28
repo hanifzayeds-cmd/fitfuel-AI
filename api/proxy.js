@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         'X-Title': 'FitFuel Pro'
       },
       body: JSON.stringify({
-        model: model || 'stepfun/step-3.5-flash:free', // Or try: 'google/gemini-2.0-flash-exp:free'
+        model: model || 'openrouter/free', // Or try: 'google/gemini-2.0-flash-exp:free'
         messages: [{ role: 'user', content: prompt }],
         temperature: temperature || 0.3
       })
